@@ -41,7 +41,7 @@ int main () {
 				     break;
 		   case '3': ModuloVoo (arqVoo);
 				     break;
-		   case '4': manutencao (arqVoo);
+		   case '4': manutencao (arqVoo);   //FALTA VERIFICAR SE E ISSO MESMO
 		             break;
 		   default: printf ("Opcao invalida \n");
 		   }
