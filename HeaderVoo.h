@@ -1,10 +1,3 @@
-/*
- * HeaderVoo.h
- *
- *  Created on: 22 de fev de 2017
- *      Author: Rodrigo
- */
-
 #ifndef HEADERVOO_H_
 #define HEADERVOO_H_
 #include <stdio.h>
@@ -23,11 +16,11 @@ typedef struct voo {
 	int status;
 }TVoo;
 
-void CadastrarVoo ();
-void ProcurarVoo (char origem[], char destino[], char data[]);
-void AlterarValorPassagem (char cod[]);
-void CancelarVoo (char cod[]);
-int BuscarVoo (char cod []);
+void CadastrarVoo (FILE * arq);
+void ProcurarVoo (FILE * arq, char origem[], char destino[], char data[]);
+void AlterarValorPassagem (FILE * arq, char cod[]);
+void CancelarVoo (FILE * arq, char cod[]);
+int BuscarVoo (FILE * arq, char cod []);
 int ValidaCodVoo (char cod[]);
 int ValidaData (char data[]);
 int ValidaHora (char hora[]);
