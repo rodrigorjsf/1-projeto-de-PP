@@ -21,7 +21,7 @@ typedef struct voo {
 	int mapaPoltronas [6][6];
 	float valor;
 	int status;
-};
+}TVoo;
 
 void CadastrarVoo ();
 void ProcurarVoo (char origem[], char destino[], char data[]);
