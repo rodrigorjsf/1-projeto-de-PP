@@ -1,5 +1,6 @@
-#include <stdio.h>
 #include "HeaderCliente.h"
+#include "HeaderPassagem.h"
+#include "HeaderVoo.h"
 
 
 FILE * criarArquivo (char nome[]) {
@@ -11,6 +12,8 @@ FILE * criarArquivo (char nome[]) {
 	return arq;
 }
 void ModuloCliente ();
+void ModuloPassagem ();
+void ModuloVoo ();
 
 int main () {
 	int i;
@@ -81,4 +84,79 @@ void ModuloCliente (){
 	} while (op != '5');
 }
 
+void ModuloPassagem (){
+	char op, cpfAux [12],codReservaAux[20], codVooAux[20], origem[100], destino[100], data[9];
+	do {
+		system ("cls");
+		printf ("-------------------- Modulo de Passagem -------------------- \n");
+		printf ("1 - Comprar Passagem \n");
+		printf ("2 - Consultar Passagens de Cliente \n");
+		printf ("3 - Cancelar Passagem \n");
+		printf ("4 - Consultar passageiro de um voo  \n");
+		printf ("5 - Sair \n");
+		printf ("informe a opcao: ");
+		op = getchar (); fflush (stdin);
+		switch (op) {
+		case '1': printf ("Informe a Origem: ");
+		          gets (origem); fflush (stdin);
+		          printf ("Informe o Destino: ");
+		          gets (destino); fflush (stdin);
+		          printf ("Informe a data do voo: ");
+		          gets (data); fflush (stdin);           // TIRAR DUVIDA SOBRE COLAR BARRAS NA DATA
+		          CadastrarPassagem (origem, destino, data);
+			      break;
+		case '2': printf ("Informe o cpf do Cliente: ");
+				  gets (cpfAux); fflush (stdin);
+				  ConsultarPassagem (cpfAux);
+				  break;
+		case '3': printf ("Informe o Codigo da Reserva: ");
+				  gets (codReservaAux); fflush (stdin);
+				  CancelarPassagem (codReservaAux);
+				  break;
+		case '4': printf ("Informe o Codigo do Voo: ");
+				  gets (codVooAux); fflush (stdin);
+				  ConsultarVoo (codVooAux);    //  CONSULTA PASSAGEIROS DE UM VOO
+				  break;
+		case '5': break;
+		default: printf ("Opcao invalida \n");
+		}
+	} while (op != '5');
+}
+
+void ModuloVoo (){
+	char op, codVooAux[20], origem[100], destino[100], data[9];
+	do {
+		system ("cls");
+		printf ("-------------------- Modulo de Voo -------------------- \n");
+		printf ("1 - Cadastrar Voo \n");
+		printf ("2 - Procurar Voo \n");
+		printf ("3 - Alterar Valor da Passagem \n");
+		printf ("4 - Cancelar Voo \n");
+		printf ("5 - Sair \n");
+		printf ("informe a opcao: ");
+		op = getchar (); fflush (stdin);
+		switch (op) {
+		case '1': CadastrarVoo ();
+			      break;
+		case '2': printf ("Informe a Origem: ");
+                  gets (origem); fflush (stdin);
+                  printf ("Informe o Destino: ");
+                  gets (destino); fflush (stdin);
+                  printf ("Informe a data do voo: ");
+                  gets (data); fflush (stdin);           // TIRAR DUVIDA SOBRE COLAR BARRAS NA DATA
+				  ProcurarVoo (origem, destino, data);
+				  break;
+		case '3': printf ("Informe o Codigo do Voo: ");
+				  gets (codVooAux); fflush (stdin);
+				  AlterarValorPassagem (codVooAux);
+				  break;
+		case '4': printf ("Informe o Codigo do Voo: ");
+				  gets (codVooAux); fflush (stdin);
+				  CancelarVoo (codVooAux);
+				  break;
+		case '5': break;
+		default: printf ("Opcao invalida \n");
+		}
+	} while (op != '5');
+}
 
