@@ -11,9 +11,10 @@ FILE * criarArquivo (char nome[]) {
 	}
 	return arq;
 }
-void ModuloCliente ();
-void ModuloPassagem ();
-void ModuloVoo ();
+
+void ModuloCliente (FILE * arqCliente);
+void ModuloPassagem (FILE * arqPassagem);
+void ModuloVoo (FILE * arqVoo);
 
 int main () {
 	int i;
@@ -34,13 +35,13 @@ int main () {
 		   printf ("Digite a opcao: ");
 		   op = getchar (); fflush (stdin);
 		   switch (op) {
-		   case '1': ModuloCliente ();
+		   case '1': ModuloCliente (arqCliente);
 				     break;
-		   case '2': ModuloPassagem ();
+		   case '2': ModuloPassagem (arqPassagem);
 				     break;
-		   case '3': ModuloVoo ();
+		   case '3': ModuloVoo (arqVoo);
 				     break;
-		   case '4': manutencao (arqVoo);
+		   case '4': manutencao (arqVoo);   //FALTA VERIFICAR SE E ISSO MESMO
 		             break;
 		   default: printf ("Opcao invalida \n");
 		   }
@@ -49,7 +50,7 @@ int main () {
     return 0;
 }
 
-void ModuloCliente (){
+void ModuloCliente (FILE * arqCliente){
 	char op, cpfAux [12];
 	do {
 		system ("cls");
@@ -64,19 +65,19 @@ void ModuloCliente (){
 		switch (op) {
 		case '1': printf ("Informe o cpf do Cliente: ");
 		          gets (cpfAux); fflush (stdin);
-		          CadastrarCliente (cpfAux);
+		          CadastrarCliente (arqCliente, cpfAux);
 			      break;
 		case '2': printf ("Informe o cpf do Cliente: ");
 				  gets (cpfAux); fflush (stdin);
-				  AlterarCliente (cpfAux);
+				  AlterarCliente (arqCliente, cpfAux);
 				  break;
 		case '3': printf ("Informe o cpf do Cliente: ");
 				  gets (cpfAux); fflush (stdin);
-				  ExibirCliente (cpfAux);
+				  ExibirCliente (arqCliente, cpfAux);
 				  break;
 		case '4': printf ("Informe o cpf do Cliente: ");
 				  gets (cpfAux); fflush (stdin);
-				  RemoverCliente (cpfAux);
+				  RemoverCliente (arqCliente, cpfAux);
 				  break;
 		case '5': break;
 		default: printf ("Opcao invalida \n");
@@ -84,7 +85,7 @@ void ModuloCliente (){
 	} while (op != '5');
 }
 
-void ModuloPassagem (){
+void ModuloPassagem (FILE * arqPassagem){
 	char op, cpfAux [12],codReservaAux[20], codVooAux[20], origem[100], destino[100], data[9];
 	do {
 		system ("cls");
@@ -103,19 +104,19 @@ void ModuloPassagem (){
 		          gets (destino); fflush (stdin);
 		          printf ("Informe a data do voo: ");
 		          gets (data); fflush (stdin);           // TIRAR DUVIDA SOBRE COLAR BARRAS NA DATA
-		          CadastrarPassagem (origem, destino, data);
+		          CadastrarPassagem (arqPassagem, origem, destino, data);
 			      break;
 		case '2': printf ("Informe o cpf do Cliente: ");
 				  gets (cpfAux); fflush (stdin);
-				  ConsultarPassagem (cpfAux);
+				  ConsultarPassagem (arqPassagem, cpfAux);
 				  break;
 		case '3': printf ("Informe o Codigo da Reserva: ");
 				  gets (codReservaAux); fflush (stdin);
-				  CancelarPassagem (codReservaAux);
+				  CancelarPassagem (arqPassagem, codReservaAux);
 				  break;
 		case '4': printf ("Informe o Codigo do Voo: ");
 				  gets (codVooAux); fflush (stdin);
-				  ConsultarVoo (codVooAux);    //  CONSULTA PASSAGEIROS DE UM VOO
+				  ConsultarVoo (arqPassagem, codVooAux);    //  CONSULTA PASSAGEIROS DE UM VOO
 				  break;
 		case '5': break;
 		default: printf ("Opcao invalida \n");
@@ -123,7 +124,7 @@ void ModuloPassagem (){
 	} while (op != '5');
 }
 
-void ModuloVoo (){
+void ModuloVoo (FILE * arqVoo){
 	char op, codVooAux[20], origem[100], destino[100], data[9];
 	do {
 		system ("cls");
@@ -136,7 +137,7 @@ void ModuloVoo (){
 		printf ("informe a opcao: ");
 		op = getchar (); fflush (stdin);
 		switch (op) {
-		case '1': CadastrarVoo ();
+		case '1': CadastrarVoo (arqVoo);
 			      break;
 		case '2': printf ("Informe a Origem: ");
                   gets (origem); fflush (stdin);
@@ -144,19 +145,40 @@ void ModuloVoo (){
                   gets (destino); fflush (stdin);
                   printf ("Informe a data do voo: ");
                   gets (data); fflush (stdin);           // TIRAR DUVIDA SOBRE COLAR BARRAS NA DATA
-				  ProcurarVoo (origem, destino, data);
+				  ProcurarVoo (arqVoo, origem, destino, data);
 				  break;
 		case '3': printf ("Informe o Codigo do Voo: ");
 				  gets (codVooAux); fflush (stdin);
-				  AlterarValorPassagem (codVooAux);
+				  AlterarValorPassagem (arqVoo, codVooAux);
 				  break;
 		case '4': printf ("Informe o Codigo do Voo: ");
 				  gets (codVooAux); fflush (stdin);
-				  CancelarVoo (codVooAux);
+				  CancelarVoo (arqVoo, codVooAux);
 				  break;
 		case '5': break;
 		default: printf ("Opcao invalida \n");
 		}
 	} while (op != '5');
+}
+
+int buscar (FILE * arq, char nomeAux[]) {
+	int cont = -1, status;
+	TCliente c;
+
+	fseek (arq, 0, 0);
+	while (1) {
+		status = fread (&c, sizeof (TCliente), 1, arq);
+		if (status != 1) {
+			if (!feof(arq))
+			    return -2; // erro de leitura
+			else
+				return -1; // nao achou
+		}
+		else {
+			cont++;
+			if (c.status == 1 && strcmp (c.nome, nomeAux) == 0)
+				return cont;
+		}
+	}
 }
 

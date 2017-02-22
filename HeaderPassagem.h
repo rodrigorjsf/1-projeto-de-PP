@@ -13,9 +13,9 @@ typedef struct passagem {
 }TPass;
 
 TPass * CadastroPassagem (char origem[], char destino[], char data[], char cpf[]);   //  CONFERIR  VARIAVEIS DE ENTRADA
-void CadastrarPassagem (char origem[], char destino[], char data[]);
-void ConsultarPassagem (char cpf []);
-void CancelarPassagem (char cod[]);
-void codVooAux (char cod[]);  //  CONSULTA PASSAGEIROS DE UM VOO
+void CadastrarPassagem (FILE * arq, char origem[], char destino[], char data[]);
+void ConsultarPassagem (FILE * arq, char cpf []);
+void CancelarPassagem (FILE * arq, char cod[]);
+void ConsultarVoo (FILE * arq, char cod[]);  //  CONSULTA PASSAGEIROS DE UM VOO
 
 #endif /* HEADERPASSAGEM_H_ */
