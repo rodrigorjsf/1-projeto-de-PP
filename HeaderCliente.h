@@ -19,7 +19,7 @@ void CadastrarCliente (char cpf[]);
 void AlterarCliente (char cpf[]);
 void ExibirCliente (char cpf[]);
 void RemoverCliente (char cpf[]);
-int consultar (cpf []);
+int BuscarCliente (char cpf []);
 int ValidaCPF (char cpf[]);
 int ValidaNome (char nome[]);
 int ValidaTelefone (char telefone[]);
