@@ -1,10 +1,3 @@
-/*
- * HeaderVoo.h
- *
- *  Created on: 22 de fev de 2017
- *      Author: Rodrigo
- */
-
 #ifndef HEADERVOO_H_
 #define HEADERVOO_H_
 #include <stdio.h>
