@@ -1,10 +1,3 @@
-/*
- * HeaderPassagem.h
- *
- *  Created on: 22 de fev de 2017
- *      Author: Rodrigo
- */
-
 #ifndef HEADERPASSAGEM_H_
 #define HEADERPASSAGEM_H_
 #include <stdio.h>
