@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include "HeaderCliente.h"
 #include "HeaderPassagem.h"
 #include "HeaderVoo.h"
