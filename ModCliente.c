@@ -70,3 +70,50 @@ int ValidaCPF (char cpf[]){
 	}  
 	return 0;  
 }  
+
+//letras e espacos
+int ValidaNome(char nome[]) {
+	int i;
+
+	for (i = 0; nome[i]; i++) {
+		if (isalpha(nome[i]) == 0) {
+			if(isspace(nome[i]) == 0)
+				return 0;
+		}
+	}
+	return 1;
+}
+
+//numeros
+int ValidaTelefone(char telefone[]) {
+	int i;
+
+	for (i = 0; telefone[i]; i++) {
+		if (isdigit(telefone[i]) == 0) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
+//letras, numeros, pontos e um @
+int ValidaEmail(char email[]) {
+	int i, j = 0;
+
+	for (i = 0; email[i]; i++) {
+		if (isalnum(email[i]) == 0) {//letra e numero
+			if (email[i] != 46) {//ponto
+				if (email[i] == 64) {//se for arroba i++
+					j++;
+				}
+				if (j > 1) {
+					return 0;
+				}
+				if (email[i] != 64) {//arroba
+					return 0;
+				}
+			}
+		}
+	}
+	return 1;
+}
