@@ -14,3 +14,6 @@ Adicionei o ModCliente.c que e onde ficarão as funções e procedimentos relaci
 
 Os itens 5 e 6(do projeto) do Moludo do Cliente já foram feitos em ModCliente.c
 
+ATT 06/03 por Mateus Correia:
+
+ModCliente.c, adicionado validar nome, telefone e email.
