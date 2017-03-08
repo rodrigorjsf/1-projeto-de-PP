@@ -1,13 +1,12 @@
 #include "HeaderCliente.h"
-#include <ctype.h>
 
 
 void CadastrarCliente (FILE * arq, char cpf[])
 {
 	TCliente cliente;
-	int igual;
-	igual = BuscarCliente (arq, cpf);
-	if (igual > -1)
+	int aux;
+	aux = BuscarCliente (arq, cpf);
+	if (aux > -1)
 		printf ("Cliente ja cadastrado. \n");
 	else{
 		//Cadastro (arq, cpf);
