@@ -5,6 +5,7 @@
 #include <string.h>
 #include <conio.h>
 #include <windows.h>
+#include <ctype.h>
 
 typedef struct cliente {
 	char cpf[12];          //PORUQE TEM QUE SER CHAR?
@@ -14,7 +15,6 @@ typedef struct cliente {
 	int status;
 }TCliente;
 
-TCliente * Cadastro (char cpf[]);
 void CadastrarCliente (FILE * arq, char cpf[]);
 void AlterarCliente (FILE * arq, char cpf[]);
 void ExibirCliente (FILE * arq, char cpf[]);
