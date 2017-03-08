@@ -79,7 +79,7 @@ void ModuloCliente (FILE * arqCliente){
 				  if (validaCPF(cpfAux) == 1)
 					  ExibirCliente (arqCliente, cpfAux);
 				  break;
-		case '4': printf ("Informe o cpf do Cliente: ");
+		case '4': printf ("Informe o cpf do Cliente: ");   // TIRAR DUVIDA DO **IMPORTANTE**
 				  gets (cpfAux); fflush (stdin);
 				  if (validaCPF(cpfAux) == 1)
 					  RemoverCliente (arqCliente, cpfAux);
