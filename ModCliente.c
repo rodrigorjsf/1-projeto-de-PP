@@ -48,6 +48,53 @@ void CadastrarCliente (FILE * arq, char cpf[])
 	}
 }
 
+
+void CadastrarCliente (FILE * arq, char cpf[])
+{
+	TCliente cliente;
+	int igual;
+	igual = BuscarCliente (arq, cpf);
+	if (igual > -1)
+		printf ("Cliente ja cadastrado. \n");
+	else{
+		//Cadastro (arq, cpf);
+		char nome [100], tel[11], email[100];
+		int status;
+		strcpy (cliente.cpf, cpf);
+		cliente.status = 1;
+		do{
+			printf("Digite o nome do cliente: \n");
+			fgets (nome, sizeof(nome), stdin);
+			if (ValidaNome(nome) == 1)
+				strcpy(cliente.nome, nome);
+			else
+				printf("Nome invalido. Por favor, inserir nome valido. \n");
+		}while (ValidaNome(nome) == 0);
+		do{
+			printf("Digite o telefone do cliente: \n");
+			fgets (tel, sizeof(tel), stdin);
+			if (ValidaTelefone(tel) == 1)
+				strcpy(cliente.telefone, tel);
+			else
+				printf("Telefone invalido. Por favor, inserir numero valido. \n");
+		}while (ValidaTelefone(tel) == 0);
+		do{
+			printf("Digite o e-mail do cliente: \n");
+			fgets (email, sizeof(email), stdin);
+			if (ValidaEmail(email) == 1)
+				strcpy(cliente.email, email);
+			else
+				printf("E-Mail invalido. Por favor, inserir e-mail valido. \n");
+		}while(ValidaEmail(email) == 0);
+		status = fwrite(&cliente,sizeof(TCliente),1,arq);
+		if (status != 1)
+			printf ("Erro de gravacao \n");
+		else
+			printf ("Cliente cadastrado com sucesso \n");
+		system ("pause");
+	}
+}
+
 int BuscarCliente (FILE * arq, char cpf []){
 	int cont = -1, status;
 		TCliente c;
