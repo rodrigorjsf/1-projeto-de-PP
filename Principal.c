@@ -20,7 +20,7 @@ void ModuloVoo (FILE * arqVoo);
 int main () {
 	int i;
 	char op, codAux[100], nomeArqum [] = "Cliente.dat", nomeArqdois [] = "Passagem.dat", nomeArqtres [] = "Voo.dat";
-	FILE * arqCliente,arqPassagem,arqVoo;
+	FILE * arqCliente,*arqPassagem,*arqVoo;
 	arqCliente = criarArquivo (nomeArqum);
 	arqPassagem = criarArquivo (nomeArqdois);
 	arqVoo = criarArquivo (nomeArqtres);
@@ -42,7 +42,7 @@ int main () {
 				     break;
 		   case '3': ModuloVoo (arqVoo);
 				     break;
-		   case '4': manutencao (arqVoo);   //FALTA VERIFICAR SE E ISSO MESMO
+		   case '4': manutencao (arqVoo);     //FALTA VERIFICAR SE E ISSO MESMO
 		             break;
 		   default: printf ("Opcao invalida \n");
 		   }
@@ -66,19 +66,23 @@ void ModuloCliente (FILE * arqCliente){
 		switch (op) {
 		case '1': printf ("Informe o cpf do Cliente: ");
 		          gets (cpfAux); fflush (stdin);
-		          CadastrarCliente (arqCliente, cpfAux);
+		          if (validaCPF(cpfAux) == 1)
+		        	  CadastrarCliente (arqCliente, cpfAux);
 			      break;
 		case '2': printf ("Informe o cpf do Cliente: ");
 				  gets (cpfAux); fflush (stdin);
-				  AlterarCliente (arqCliente, cpfAux);
+				  if (validaCPF(cpfAux) == 1)
+					  AlterarCliente (arqCliente, cpfAux);
 				  break;
 		case '3': printf ("Informe o cpf do Cliente: ");
 				  gets (cpfAux); fflush (stdin);
-				  ExibirCliente (arqCliente, cpfAux);
+				  if (validaCPF(cpfAux) == 1)
+					  ExibirCliente (arqCliente, cpfAux);
 				  break;
 		case '4': printf ("Informe o cpf do Cliente: ");
 				  gets (cpfAux); fflush (stdin);
-				  RemoverCliente (arqCliente, cpfAux);
+				  if (validaCPF(cpfAux) == 1)
+					  RemoverCliente (arqCliente, cpfAux);
 				  break;
 		case '5': break;
 		default: printf ("Opcao invalida \n");
