@@ -24,7 +24,7 @@ HeaderCliente.h :
 
 Removi o TCliente * Cadastro() pois o cadastro será feito em CadastrarCliente().
 
-Adicionei a biblioteca #include <ctype.h> 
+Adicionei a biblioteca ctype.h
 
 Principal.c:
 
