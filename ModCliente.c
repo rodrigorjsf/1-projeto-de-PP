@@ -1,4 +1,5 @@
 #include "HeaderCliente.h"
+#include <ctype.h>
 
 int BuscarCliente (FILE * arq, char cpf []){
 	int cont = -1, status;
