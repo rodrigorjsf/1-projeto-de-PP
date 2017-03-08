@@ -47,6 +47,57 @@ void CadastrarCliente (FILE * arq, char cpf[])
 	}
 }
 
+void AlterarCliente(FILE *arq, char cpf[]){
+    char op;
+    int escolha;
+    TCliente c;
+    int pos, status;
+    
+    pos = BuscarCliente (arq, cpf);
+    if (pos == -1)
+        printf ("Cliente nao cadastrado \n");
+    else if (pos == -2)
+        printf ("Erro de leitura \n");
+    else {
+        fseek(arq, pos * sizeof (TCliente), 0);
+        status = fread (&c,sizeof (TCliente), 1, arq);
+    }
+ 
+    for (escolha = 1; escolha != 2; ) {
+    printf("Escolha o que deseja altrar: ");
+    printf ("1 - Alterar nome \n");
+    printf ("2 - Alterar email \n");
+    printf ("3 - Alterar telefpne \n");
+    printf ("4 - Sair \n");
+    printf ("informe a opcao: ");
+    op = getchar (); fflush (stdin);
+    
+        
+    
+    switch (op) {
+        case 1: printf("Digite o novo nome: ");
+            gets (c.nome); fflush (stdin);
+        case 2: printf("Digite o novo email: ");
+            gets (c.email); fflush (stdin);
+        case 3: printf("Digite o novo telefone: ");
+            gets (c.telefone); fflush (stdin);
+        case 4: break;
+        default: printf("Opcao invalida");
+    }
+        printf("Deseja alterar mais algum dado: \n");
+        printf("1 - Sim \n");
+        printf("2 - Nao \n");
+        escolha = getint(); fflush(stdin);
+    }
+    fseek(arq, -sizeof(TCliente), 1);
+    status = fwrite (&c,sizeof (TCliente), 1, arq);
+    if (status != 1)
+        printf ("Erro de gravacao \n");
+    else
+        printf ("Cliente alterado com sucesso \n");
+    
+}
+
 int BuscarCliente (FILE * arq, char cpf []){
 	int cont = -1, status;
 		TCliente c;
