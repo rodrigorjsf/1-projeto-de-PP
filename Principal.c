@@ -19,7 +19,7 @@ void ModuloVoo (FILE * arqVoo);
 int main () {
 	int i;
 	char op, codAux[100], nomeArqum [] = "Cliente.dat", nomeArqdois [] = "Passagem.dat", nomeArqtres [] = "Voo.dat";
-	FILE * arqCliente,arqPassagem,arqVoo;
+	FILE * arqCliente, *arqPassagem, *arqVoo;
 	arqCliente = criarArquivo (nomeArqum);
 	arqPassagem = criarArquivo (nomeArqdois);
 	arqVoo = criarArquivo (nomeArqtres);
