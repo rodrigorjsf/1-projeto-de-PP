@@ -86,17 +86,6 @@ void ExibirCliente (FILE * arq, char cpf[]) {
 			printf ("Nome: %s \n", c.nome);
 			printf ("Fone: %s \n", c.telefone);
 			printf ("Email: %s \n", c.email);
-
-			/*printf ("Informe o novo telefone: ");
-			gets (c.fone); fflush (stdin);
-			printf ("Informe o novo email: ");
-			gets (c.email); fflush (stdin);
-			fseek(arq, -sizeof(TCliente), 1);
-			status = fwrite (&c,sizeof (TCliente), 1, arq);
-			if (status != 1)
-				printf ("Erro de gravacao \n");
-			else
-				printf ("Contato alterado com sucesso \n");*/
 		}
 	}
 }
