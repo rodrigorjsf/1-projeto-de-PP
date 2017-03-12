@@ -97,3 +97,60 @@ int ValidaHora(char hora[]) {
 
 	return 1;
 }
+
+void CadastrarVoo(FILE * arq, char cod[]) {
+	TVoo v;
+	int aux, i, j;
+	char data[9], horario[5];
+
+	aux = BuscarVoo(arq, cod);
+	if (aux < 0) {
+		printf("Codigo de voo ja existente. \n");
+	}
+	else {
+		strcpy(v.codVoo, cod);
+
+		printf("Digite a origem: \n");
+		fgets(v.origem, sizeof(v.destino), stdin);
+		fflush(stdin);
+
+		printf("Digite o destino: \n");
+		fgets(v.destino, sizeof(v.destino), stdin);
+		fflush(stdin);
+
+		do {
+			printf("Digite a data de partida: \n");
+			fgets(data, sizeof(data), stdin);
+			fflush(stdin);
+			if (ValidaData(data) == 0)
+				printf("Data invalida, digite novamente. \n");
+			else
+				strcpy(v.data, data);
+		} while (ValidaData(data) == 0);
+
+		do {
+			printf("Digite o horario de partida: \n");
+			fgets(horario, sizeof(horario), stdin);
+			fflush(stdin);
+			if (ValidaHora(horario) == 0)
+				printf("Horario invalido, digite novamente. \n");
+			else
+				stcpy(v.horario, horario);
+		} while (ValidaHora(horario) == 0);
+
+		v.poltronas = 36;
+
+		for (i = 0; i < 6; i++) {
+			for (j = 0; j < 6; j++) {
+				v.mapaPoltronas[i][j] = 'o';
+			}
+		}
+
+		printf("Digite o valor da passagem: \n");
+		scanf("%f", &v.valor);
+
+		v.status = 1;
+
+	}
+
+}
