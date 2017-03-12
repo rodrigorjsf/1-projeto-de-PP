@@ -35,3 +35,12 @@ ModCLiente.c:
 Adicionei os Procedimentos CadastrarCliente(), ExibirCliente() e RemoverCliente()
 
 Alterei ValidaCPF() para que retorne 1 em caso de CPF válido e 0 para inválido.
+
+ATT 12/03 por Mateus Correia:
+
+Adicionei o ModVoo.c, junto com ele:
+Consultar Voo;
+Validar Cod Voo;
+Validar Data;
+Validar Horario.
+
