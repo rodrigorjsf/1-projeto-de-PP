@@ -16,7 +16,7 @@ typedef struct voo {
 	int status;
 }TVoo;
 
-void CadastrarVoo (FILE * arq);
+void CadastrarVoo (FILE * arq, char cod[]);
 void ProcurarVoo (FILE * arq, char origem[], char destino[], char data[]);
 void AlterarValorPassagem (FILE * arq, char cod[]);
 void CancelarVoo (FILE * arq, char cod[]);
