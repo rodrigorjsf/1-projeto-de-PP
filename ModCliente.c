@@ -70,17 +70,17 @@ void AlterarCliente(FILE *arq, char cpf[]){
     printf ("3 - Alterar telefpne \n");
     printf ("4 - Sair \n");
     printf ("informe a opcao: ");
-    op = getchar (); fflush (stdin);
-    
-        
-    
+    op = getchar (); fflush (stdin);           
     switch (op) {
         case 1: printf("Digite o novo nome: ");
-            gets (c.nome); fflush (stdin);
+    	        gets (c.nome); fflush (stdin);
+    	        break;
         case 2: printf("Digite o novo email: ");
-            gets (c.email); fflush (stdin);
+                gets (c.email); fflush (stdin);
+                break;
         case 3: printf("Digite o novo telefone: ");
-            gets (c.telefone); fflush (stdin);
+                gets (c.telefone); fflush (stdin);
+                break;
         case 4: break;
         default: printf("Opcao invalida");
     }
