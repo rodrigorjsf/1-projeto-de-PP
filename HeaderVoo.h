@@ -3,9 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 typedef struct voo {
-	char codVoo [20];
+	char codVoo [8];
 	char origem [100];
 	char destino [100];
 	char data [9];
@@ -16,6 +17,7 @@ typedef struct voo {
 	int status;
 }TVoo;
 
+char * gerarCodigo ();
 void CadastrarVoo (FILE * arq);
 void ProcurarVoo (FILE * arq, char origem[], char destino[], char data[]);
 void AlterarValorPassagem (FILE * arq, char cod[]);
