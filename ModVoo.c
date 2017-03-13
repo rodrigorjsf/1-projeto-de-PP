@@ -169,6 +169,8 @@ char * gerarCodigo (){
 		aux = (rand() % 9) + 48;  //transforma o numero aleatorio int em char?
 		cod[i] = aux;
 	}
+	i++;
+	cod[i] = '\0';
 	return cod;
 }
 
