@@ -52,7 +52,7 @@ int main () {
 }
 
 void ModuloCliente (FILE * arqCliente){
-	char op, cpfAux [12];
+	char op;
 	do {
 		system ("cls");
 		printf ("-------------------- Modulo do Cliente -------------------- \n");
@@ -64,25 +64,13 @@ void ModuloCliente (FILE * arqCliente){
 		printf ("informe a opcao: ");
 		op = getchar (); fflush (stdin);
 		switch (op) {
-		case '1': printf ("Informe o cpf do Cliente: ");
-		          gets (cpfAux); fflush (stdin);
-		          if (validaCPF(cpfAux) == 1)
-		        	  CadastrarCliente (arqCliente, cpfAux);
+		case '1': CadastrarCliente (arqCliente);
 			      break;
-		case '2': printf ("Informe o cpf do Cliente: ");
-				  gets (cpfAux); fflush (stdin);
-				  if (validaCPF(cpfAux) == 1)
-					  AlterarCliente (arqCliente, cpfAux);
+		case '2': AlterarCliente (arqCliente);
 				  break;
-		case '3': printf ("Informe o cpf do Cliente: ");
-				  gets (cpfAux); fflush (stdin);
-				  if (validaCPF(cpfAux) == 1)
-					  ExibirCliente (arqCliente, cpfAux);
+		case '3': ExibirCliente (arqCliente);
 				  break;
-		case '4': printf ("Informe o cpf do Cliente: ");   // TIRAR DUVIDA DO **IMPORTANTE**
-				  gets (cpfAux); fflush (stdin);
-				  if (validaCPF(cpfAux) == 1)
-					  RemoverCliente (arqCliente, cpfAux);
+		case '4': RemoverCliente (arqCliente);
 				  break;
 		case '5': break;
 		default: printf ("Opcao invalida \n");

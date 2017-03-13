@@ -10,15 +10,15 @@
 typedef struct cliente {
 	char cpf[12];          //PORUQE TEM QUE SER CHAR?
 	char nome [100];
-	char telefone [11];
+	char telefone [12];
 	char email [100];
 	int status;
 }TCliente;
 
-void CadastrarCliente (FILE * arq, char cpf[]);
-void AlterarCliente (FILE * arq, char cpf[]);
-void ExibirCliente (FILE * arq, char cpf[]);
-void RemoverCliente (FILE * arq, char cpf[]);
+void CadastrarCliente (FILE * arq);
+void AlterarCliente (FILE * arq);
+void ExibirCliente (FILE * arq);
+void RemoverCliente (FILE * arq);
 int BuscarCliente (FILE * arq, char cpf []);
 int ValidaCPF (char cpf[]);
 int ValidaNome (char nome[]);

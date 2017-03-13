@@ -1,5 +1,4 @@
 #include "HeaderVoo.h"
-#include <ctype.h>
 
 int BuscarVoo(FILE * arq, char cod[]) {
 	int cont = -1, status;
@@ -21,6 +20,67 @@ int BuscarVoo(FILE * arq, char cod[]) {
 		}
 	}
 
+}
+
+void AlterarValorPassagem (FILE * arq, char cod[]){
+	TVoo v;
+	int aux, i, j, status;
+	char data[9], horario[5];
+    int i, validar,sair = 0;
+    char cpf[12],op;
+    do
+    {
+    	do{
+    		i = 0;
+    		system ("cls");
+    		printf ("Informe o Codigo do Voo: ");
+    		while(i <= 7){
+    			cpf[i] = getche();
+    			if (i == 7)
+    				cpf[8] = '\0';
+    		}
+    	}while (strlen(cpf) != 7);
+    	i = 0;                          ////////
+    	validar = ValidaCodVoo (cod);
+    	if (validar == 0)
+    	{
+    		printf("Codigo invalido, deseja tentar denovo? (S/N) \n");
+    		do{
+    			op = getche();
+    			if (op != 78 && op != 83 && op != 110 && op != 115)
+    			{
+    				printf("Opcao invalida. Deseja tentar denovo? (S/N) \n");
+    			}
+    			else if (op == 78 || op == 110){
+    				sair = 1;
+    				break;
+    			}
+    			else
+    				break;
+    		}while(1);
+    	}
+    }while (validar == 0 || sair != 1);
+    if (sair == 1)
+    	return;
+	aux = BuscarVoo(arq, cod);
+	if (aux < 0)
+		printf("Codigo nao registrado. \n");
+	else {
+		fseek(arq, aux * sizeof (TVoo), 0);
+		status = fread (&v,sizeof (TVoo), 1, arq);
+		if (status != 1)
+			printf ("Erro de leitura \n");
+		else {
+			printf("Digite o novo valor da passagem: ");
+			scan("%f", &v.valor);
+		}
+	}
+	fseek(arq, -sizeof(TVoo), 1);
+	status = fwrite (&v,sizeof (TVoo), 1, arq);
+	if (status != 1)
+		printf ("Erro de gravacao \n");
+	else
+		printf ("Cliente alterado com sucesso \n");
 }
 
 int ValidaCodVoo(char cod[]) {
@@ -97,12 +157,62 @@ int ValidaHora(char hora[]) {
 
 	return 1;
 }
-
-void CadastrarVoo(FILE * arq, char cod[]) {
+char * gerarCodigo (){
+	int n, i;
+	char letras[26] = {'A', 'B', 'C', 'D', 'E','F', 'G', 'H', 'I','J', 'K', 'L', 'M','N', 'O', 'P', 'Q','R', 'S', 'T', 'U','V', 'X', 'Z', 'W','Y'};
+	char aux, cod[8];
+	for(i = 0;i < 3;i++){
+		aux = (rand() % 9) + 48;  //transforma o numero aleatorio int em char
+		cod[i] = aux;
+	}
+	for(i = 3;i < 8;i++){
+		n = rand() % 26;
+		cod[i] = letras[n];
+	}
+	return cod;
+}
+void CadastrarVoo(FILE * arq) {
 	TVoo v;
 	int aux, i, j;
-	char data[9], horario[5];
+	char cod[8], data[9], horario[5];
+    /*int i, validar,sair = 0;
 
+    char cpf[12],op;
+    do
+    {
+    	do{
+    		i = 0;
+    		system ("cls");
+    		printf ("Informe o Codigo do Voo: ");
+    		while(i <= 7){
+    			cpf[i] = getche();
+    			if (i == 7)
+    				cpf[8] = '\0';
+    		}
+    	}while (strlen(cpf) != 7);
+    	i = 0;                          ////////
+    	validar = ValidaCodVoo (cod);
+    	if (validar == 0)
+    	{
+    		printf("Codigo invalido, deseja tentar denovo? (S/N) \n");
+    		do{
+    			op = getche();
+    			if (op != 78 && op != 83 && op != 110 && op != 115)
+    			{
+    				printf("Opcao invalida. Deseja tentar denovo? (S/N) \n");
+    			}
+    			else if (op == 78 || op == 110){
+    				sair = 1;
+    				break;
+    			}
+    			else
+    				break;
+    		}while(1);
+    	}
+    }while (validar == 0 || sair != 1);
+    if (sair == 1)
+    	return;*/
+	cod = gerarCodigo ();
 	aux = BuscarVoo(arq, cod);
 	if (aux < 0) {
 		printf("Codigo de voo ja existente. \n");
@@ -154,3 +264,4 @@ void CadastrarVoo(FILE * arq, char cod[]) {
 	}
 
 }
+
