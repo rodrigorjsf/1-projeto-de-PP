@@ -162,15 +162,16 @@ char * gerarCodigo (){
 	char letras[26] = {'A', 'B', 'C', 'D', 'E','F', 'G', 'H', 'I','J', 'K', 'L', 'M','N', 'O', 'P', 'Q','R', 'S', 'T', 'U','V', 'X', 'Z', 'W','Y'};
 	char aux, cod[8];
 	for(i = 0;i < 3;i++){
-		aux = (rand() % 9) + 48;  //transforma o numero aleatorio int em char
-		cod[i] = aux;
-	}
-	for(i = 3;i < 8;i++){
 		n = rand() % 26;
 		cod[i] = letras[n];
 	}
+	for(i = 3;i < 8;i++){
+		aux = (rand() % 9) + 48;  //transforma o numero aleatorio int em char?
+		cod[i] = aux;
+	}
 	return cod;
 }
+
 void CadastrarVoo(FILE * arq) {
 	TVoo v;
 	int aux, i, j;
