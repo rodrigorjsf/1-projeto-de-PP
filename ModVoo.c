@@ -111,6 +111,45 @@ void CadastrarVoo(FILE * arq) {
 
 }
 
+void ProcurarVoo (FILE * arq, char origem[], char destino[], char data[]){
+    TVoo voo;
+    int status, aux;
+    fseek (arq, 0, 0);
+    while (1) {
+        status = fread (&voo, sizeof (TVoo), 1, arq);
+        if (status != 1) {
+            if (!feof(arq)){
+                printf("Erro na leitura do arquivo");
+                break; // erro de leitura
+            }else
+                printf("Nenhum voo encontrado"); // nao achou
+        }
+        else {
+            do{
+                if(voo.destino == destino && voo.origem == origem  && voo.data == data){
+                    printf("Codigo do voo: %s\n", voo.codVoo);
+                    printf("Horario do voo: %s\n", voo.horario);
+                    printf("Cadeiras disponiveis nesse voo: %d", voo.poltronas);
+                }
+                aux = BuscarVoo(arq, voo.codVoo);
+                if (aux < 0)
+                    printf("Codigo nao registrado. \n");
+                else {
+                    fseek(arq, aux * sizeof (TVoo), 0);
+                    status = fread (&voo,sizeof (TVoo), 1, arq);
+                    if (status != 1)
+                        printf ("Erro de leitura \n");
+                    else {
+                        
+                    }
+                }
+            }while (status != 1);
+        }
+    }
+
+    
+}
+
 void AlterarValorPassagem (FILE * arq, char cod[]){
 	TVoo v;
 	int aux, i, j, status;
@@ -191,6 +230,24 @@ int BuscarVoo(FILE * arq, char cod[]) {
 				return cont;
 		}
 	}
+
+}
+
+void CancelarVoo (FILE * arq, char cod[]){
+    TVoo voo;
+    int status, aux;
+    aux = BuscarVoo(arq, cod);
+    if (aux < 0)
+        printf("Codigo nao registrado. \n");
+    else {
+        fseek(arq, aux * sizeof (TVoo), 0);
+        status = fread (&voo,sizeof (TVoo), 1, arq);
+        if (status != 1)
+            printf ("Erro de leitura \n");
+        else {
+            voo.status = 0;
+        }
+    }
 
 }
 
