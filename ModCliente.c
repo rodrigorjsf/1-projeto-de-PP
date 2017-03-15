@@ -38,6 +38,7 @@ void CadastrarNome (TCliente * c)
 	char nomeAux[100], nome [100];
 	int i;
 	do{
+		i = 0;
 		system("cls");
 		printf("Digite o nome do cliente: \n");
 		while(i < 100)
@@ -68,6 +69,7 @@ void CadastrarTelefone (TCliente * c)
 	char tel[12];
 	int i;
 	do{
+		i = 0;
 		system("cls");
 		printf("Digite o telefone do cliente: \n");
 		while(i < 12)
@@ -97,6 +99,7 @@ void CadastrarEmail (TCliente * c)
 	char email[100];
 	int i;
 	do{
+		i = 0;
 		system("cls");
 		printf("Digite o e-mail do cliente: \n");
 		while(i < 100)
