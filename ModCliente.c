@@ -1,36 +1,15 @@
 #include "HeaderCliente.h"
 
-void CadastrarCliente (FILE * arq)
-{
-	TCliente cliente;
-	int aux, i, validar,sair = 0;
-	char cpf[12],op;
-	do
+int RecebeCPF(char cpf[]){
+
+	int i, validar, sair = 0;
+	char op;
+	i = 0;
+	validar = ValidaCPF (cpf);
+	if (validar == 0)
 	{
+		printf("CPF invalido, deseja tentar denovo? (S/N) \n");
 		do{
-			i = 0;
-			system ("cls");
-			printf ("Informe o cpf do Cliente: ");
-			while(i <= 11){
-				cpf[i] = getche();
-				if (i == 2)
-					printf (".");
-				if (i == 5)
-					printf (".");
-				if (i == 8)
-					printf ("-");
-				if (i == 11)
-					cpf[12] = '\0';
-
-			}
-		}while (strlen(cpf) != 11);
-		i = 0;
-		validar = ValidaCPF (cpf);
-		if (validar == 0)
-		{
-
-			printf("CPF invalido, deseja tentar denovo? (S/N) \n");
-			do{
 			op = getche();
 			if (op != 78 && op != 83 && op != 110 && op != 115)
 			{
@@ -38,89 +17,127 @@ void CadastrarCliente (FILE * arq)
 			}
 			else if (op == 78 || op == 110){
 				sair = 1;
-				break;
+				return 2;                             // se for invalido e nao deseja tentar novamente
 			}
 			else
+				return 0;                    //se for invalido e desejar tentar denovo
+		}while(1);
+	}
+	else
+		return 1;	                                               /////////// se for valido
+}
+
+char * gerarMaiusculo (char nome[]){
+	char maiusculo [100];
+	int i;
+	for(i=0; nome[i]!= '\0'; i++)
+		maiusculo[i] = toupper(nome[i]);
+	return maiusculo;
+}
+
+void CadastrarNome (TCliente * c)
+{
+	char nomeAux[100], nome [100];
+	int i;
+	do{
+		system("cls");
+		printf("Digite o nome do cliente: \n");
+		while(i < 100)
+		{
+			nome[i] = getche();
+			if (i == 99)
+				nome[100] = '\0';
+			if (nome[i] == 13)
+			{
+				nome[i] = '\0';
 				break;
-			}while(1);
+			}
+			i++;
 		}
-	}while (validar == 0 || sair != 1);
-	if (sair == 1)
-		return;                                                /////////// ate aqui validacao cpf
+		if (ValidaNome(nome) == 1){
+			nomeAux = gerarMaiusculo (nome);
+			strcpy(c.nome, nomeAux);
+		}
+		else{
+			printf("Nome invalido. Por favor, inserir nome valido. \n");
+			system("pause");
+		}
+	}while (ValidaNome(nome) == 0);
+}
+
+void CadastrarTelefone (TCliente * c)
+{
+	char tel[12];
+	int i;
+	do{
+		system("cls");
+		printf("Digite o telefone do cliente: \n");
+		while(i < 12)
+		{
+			if (i == 0)
+				printf ("(");
+			tel[i] = getche();
+			if (i == 1)
+				printf (") ");
+			if (i == 6)
+				printf ("-");
+			if (i == 11)
+				tel[12] = '\0';
+			i++;
+		}
+		if (ValidaTelefone(tel) == 1)
+			strcpy(c.telefone, tel);
+		else{
+			printf("Telefone invalido. Por favor, inserir numero valido. \n");
+			system("pause");
+		}
+	}while (ValidaTelefone(tel) == 0);
+}
+
+void CadastrarEmail (TCliente * c)
+{
+	char email[100];
+	int i;
+	do{
+		system("cls");
+		printf("Digite o e-mail do cliente: \n");
+		while(i < 100)
+		{
+			email[i] = getche();
+			if (i == 99)
+				email[100] = '\0';
+			if (email[i] == 13)
+			{
+				email[i] = '\0';
+				break;
+			}
+			i++;
+		}
+		if (ValidaEmail(email) == 1)
+			strcpy(c.email, email);
+		else{
+			printf("E-Mail invalido. Por favor, inserir e-mail valido. \n");
+			system("pause");
+		}
+	}while(ValidaEmail(email) == 0);
+}
+
+void CadastrarCliente (FILE * arq, char cpf [])
+{
+	TCliente cliente;
+	int aux, i, validar,sair = 0;
+	char nomeAux [100];
+
 	aux = BuscarCliente (arq, cpf);
 	if (aux > -1)
 		printf ("Cliente ja cadastrado. \n");
 	else{
-		char nome [100], tel[11], email[100];
 		int status;
 		strcpy (cliente.cpf, cpf);
 		cliente.status = 1;
-		do{
-			printf("Digite o nome do cliente: \n");
-			//fgets (nome, sizeof(nome), stdin);
-			while(i < 100)
-			{
-				nome[i] = getche();
-				if (i == 99)
-					nome[100] = '\0';
-				if (nome[i] == 13)
-				{
-					nome[i] = '\0';
-					break;
-				}
-				i++;
-			}
-			if (ValidaNome(nome) == 1)
-				strcpy(cliente.nome, nome);
-			else
-				printf("Nome invalido. Por favor, inserir nome valido. \n");
-		}while (ValidaNome(nome) == 0);
-		do{
-			printf("Digite o telefone do cliente: \n");
-			//fgets (tel, sizeof(tel), stdin);
-			while(i < 12)
-			{
-				if (i == 0)
-					printf ("(");
-				nome[i] = getche();
-				if (i == 1)
-					printf (") ");
-				if (i == 6)
-					printf ("-");
-				if (i == 11)
-					nome[12] = '\0';
-				if (nome[i] == 13)
-				{
-					nome[i] = '\0';
-					break;
-				}
-				i++;
-			}
-			if (ValidaTelefone(tel) == 1)
-				strcpy(cliente.telefone, tel);
-			else
-				printf("Telefone invalido. Por favor, inserir numero valido. \n");
-		}while (ValidaTelefone(tel) == 0);
-		do{
-			printf("Digite o e-mail do cliente: \n");
-			//fgets (email, sizeof(email), stdin);
-			while(i < 100)
-			{
-				nome[i] = getche();
-				if (i == 99)
-					nome[100] = '\0';
-				if (nome[i] == 13)
-				{
-					nome[i] = '\0';
-					break;
-				}
-				i++;
-			}
-			if (ValidaEmail(email) == 1)
-				strcpy(cliente.email, email);
-			else
-				printf("E-Mail invalido. Por favor, inserir e-mail valido. \n");
-		}while(ValidaEmail(email) == 0);
+		CadastrarNome (&cliente);
+		CadastrarTelefone (&cliente);
+		CadastrarEmail (&cliente);
 		status = fwrite(&cliente,sizeof(TCliente),1,arq);
 		if (status != 1)
 			printf ("Erro de gravacao \n");
@@ -130,52 +147,12 @@ void CadastrarCliente (FILE * arq)
 	}
 }
 
-void AlterarCliente(FILE *arq){
+void AlterarCliente(FILE * arq, char cpf []){
     int escolha;
-    TCliente c;
+    TCliente cliente;
     int pos, status;
-    int i, validar,sair = 0;
-    char cpf[12],op;
-    do
-    {
-    	do{
-    		i = 0;
-    		system ("cls");
-    		printf ("Informe o cpf do Cliente: ");
-    		while(i <= 11){
-    			cpf[i] = getche();
-    			if (i == 2)
-    				printf (".");
-    			if (i == 5)
-    				printf (".");
-    			if (i == 8)
-    				printf ("-");
-    			if (i == 11)
-    				cpf[12] = '\0';
-    		}
-    	}while (strlen(cpf) != 11);
-    	i = 0;
-    	validar = ValidaCPF (cpf);
-    	if (validar == 0)
-    	{
-    		printf("CPF invalido, deseja tentar denovo? (S/N) \n");
-    		do{
-    			op = getche();
-    			if (op != 78 && op != 83 && op != 110 && op != 115)
-    			{
-    				printf("Opcao invalida. Deseja recadastrar o CPF? (S/N) \n");
-    			}
-    			else if (op == 78 || op == 110){
-    				sair = 1;
-    				break;
-    			}
-    			else
-    				break;
-    		}while(1);
-    	}
-    }while (validar == 0 || sair != 1);
-    if (sair == 1)
-    	return;
+    char op;
+
     pos = BuscarCliente (arq, cpf);
     if (pos == -1)
         printf ("Cliente nao cadastrado \n");
@@ -183,7 +160,7 @@ void AlterarCliente(FILE *arq){
         printf ("Erro de leitura \n");
     else {
         fseek(arq, pos * sizeof (TCliente), 0);
-        status = fread (&c,sizeof (TCliente), 1, arq);
+        status = fread (&cliente,sizeof (TCliente), 1, arq);
     }
     for (escolha = 1; escolha != 2; ) {
     	printf("Escolha o que deseja altrar: ");
@@ -194,16 +171,17 @@ void AlterarCliente(FILE *arq){
     	printf ("informe a opcao: ");
     	op = getchar (); fflush (stdin);
     	switch (op) {
-    	case 1: printf("Digite o novo nome: ");
-    	        gets (c.nome); fflush (stdin);
-    	        break;
-        case 2: printf("Digite o novo email: ");
-                gets (c.email); fflush (stdin);
-                break;
-        case 3: printf("Digite o novo telefone: ");
-                gets (c.telefone); fflush (stdin);
-                break;
-        case 4: break;
+    	case 1:
+    		CadastrarNome (&cliente);
+    		break;
+        case 2:
+        	CadastrarEmail (&cliente);
+        	break;
+        case 3:
+        	CadastrarTelefone (&cliente);
+        	break;
+        case 4:
+        	break;
                 default: printf("Opcao invalida");
     }
     	printf("Deseja alterar mais algum dado: \n");
@@ -212,58 +190,17 @@ void AlterarCliente(FILE *arq){
         escolha = getint(); fflush(stdin);
     }
     fseek(arq, -sizeof(TCliente), 1);
-    status = fwrite (&c,sizeof (TCliente), 1, arq);
+    status = fwrite (&cliente,sizeof (TCliente), 1, arq);
     if (status != 1)
         printf ("Erro de gravacao \n");
     else
         printf ("Cliente alterado com sucesso \n");
 }
 
-void ExibirCliente (FILE * arq) {
+void ExibirCliente (FILE * arq, char cpf []) {
 	TCliente c;
 	int pos, status;
-	int i, validar,sair = 0;
-	char cpf[12],op;
-	do
-	{
-		do{
-			i = 0;
-			system ("cls");
-			printf ("Informe o cpf do Cliente: ");
-			while(i <= 11){
-				cpf[i] = getche();
-				if (i == 2)
-					printf (".");
-				if (i == 5)
-					printf (".");
-				if (i == 8)
-					printf ("-");
-				if (i == 11)
-					cpf[12] = '\0';
-			}
-		}while (strlen(cpf) != 11);
-		i = 0;
-		validar = ValidaCPF (cpf);
-		if (validar == 0)
-		{
-			printf("CPF invalido, deseja tentar denovo? (S/N) \n");
-			do{
-				op = getche();
-				if (op != 78 && op != 83 && op != 110 && op != 115)
-				{
-					printf("Opcao invalida. Deseja recadastrar o CPF? (S/N) \n");
-				}
-				else if (op == 78 || op == 110){
-					sair = 1;
-					break;
-				}
-				else
-					break;
-			}while(1);
-		}
-	}while (validar == 0 || sair != 1);
-	if (sair == 1)
-		return;
+
 	pos = BuscarCliente (arq, cpf);
 	if (pos == -1)
 		printf ("Cliente nao cadastrado \n");
@@ -282,51 +219,10 @@ void ExibirCliente (FILE * arq) {
 	}
 }
 
-void RemoverCliente (FILE * arq) {
+void RemoverCliente (FILE * arq, char cpf []) {
 	TCliente c;
 	int pos, status;
-	int i, validar,sair = 0;
-	char cpf[12],op;
-	do
-	{
-		do{
-			i = 0;
-			system ("cls");
-			printf ("Informe o cpf do Cliente: ");
-			while(i <= 11){
-				cpf[i] = getche();
-				if (i == 2)
-					printf (".");
-				if (i == 5)
-					printf (".");
-				if (i == 8)
-					printf ("-");
-				if (i == 11)
-					cpf[12] = '\0';
-			}
-		}while (strlen(cpf) != 11);
-		i = 0;
-		validar = ValidaCPF (cpf);
-		if (validar == 0)
-		{
-			printf("CPF invalido, deseja tentar denovo? (S/N) \n");
-			do{
-				op = getche();
-				if (op != 78 && op != 83 && op != 110 && op != 115)
-				{
-					printf("Opcao invalida. Deseja recadastrar o CPF? (S/N) \n");
-				}
-				else if (op == 78 || op == 110){
-					sair = 1;
-					break;
-				}
-				else
-					break;
-			}while(1);
-		}
-	}while (validar == 0 || sair != 1);
-	if (sair == 1)
-		return;
+
 	pos = BuscarCliente (arq, cpf);
 	if (pos == -1)
 		printf ("Cliente nao cadastrado \n");
@@ -379,7 +275,7 @@ int ValidaCPF (char cpf[]){
 	int i = 0,soma=0,digito1,result1,result2,digito2,valor;
 
 	do{
-		if (isdigit(cpf[i]) == 0) /////////////////////////////////////////////
+		if (isdigit(cpf[i]) == 0)
 		{
 			printf ("CPF Invalido. Informe uma sequencia de 11 numeros sem espacos entre eles.");
 			system ("pause");

@@ -52,7 +52,8 @@ int main () {
 }
 
 void ModuloCliente (FILE * arqCliente){
-	char op;
+	char op, auxCpf[12];
+	int i, aux;
 	do {
 		system ("cls");
 		printf ("-------------------- Modulo do Cliente -------------------- \n");
@@ -64,15 +65,100 @@ void ModuloCliente (FILE * arqCliente){
 		printf ("informe a opcao: ");
 		op = getchar (); fflush (stdin);
 		switch (op) {
-		case '1': CadastrarCliente (arqCliente);
-			      break;
-		case '2': AlterarCliente (arqCliente);
-				  break;
-		case '3': ExibirCliente (arqCliente);
-				  break;
-		case '4': RemoverCliente (arqCliente);
-				  break;
-		case '5': break;
+		case '1':
+			do{
+				i = 0;
+				system ("cls");
+				printf ("Informe o CPF do Cliente: ");
+				while(i <= 11){
+					auxCpf[i] = getche();
+					if (i == 2)
+						printf (".");
+					if (i == 5)
+						printf (".");
+					if (i == 8)
+						printf ("-");
+					if (i == 11)
+						auxCpf[12] = '\0';
+				}
+				aux = RecebeCPF(auxCpf);
+			}while (aux == 0);
+			if (aux == 2)
+				break;
+			else
+				CadastrarCliente (arqCliente, auxCpf);
+			break;
+		case '2':
+			do{
+				i = 0;
+				system ("cls");
+				printf ("Informe o CPF do Cliente: ");
+				while(i <= 11){
+					auxCpf[i] = getche();
+					if (i == 2)
+						printf (".");
+					if (i == 5)
+						printf (".");
+					if (i == 8)
+						printf ("-");
+					if (i == 11)
+						auxCpf[12] = '\0';
+				}
+				aux = RecebeCPF(auxCpf);
+			}while (aux == 0);
+			if (aux == 2)
+				break;
+			else
+				AlterarCliente (arqCliente, auxCpf);
+			break;
+		case '3':
+			do{
+				i = 0;
+				system ("cls");
+				printf ("Informe o CPF do Cliente: ");
+				while(i <= 11){
+					auxCpf[i] = getche();
+					if (i == 2)
+						printf (".");
+					if (i == 5)
+						printf (".");
+					if (i == 8)
+						printf ("-");
+					if (i == 11)
+						auxCpf[12] = '\0';
+				}
+				aux = RecebeCPF(auxCpf);
+			}while (aux == 0);
+			if (aux == 2)
+				break;
+			else
+				ExibirCliente (arqCliente, auxCpf);
+			break;
+		case '4':
+			do{
+				i = 0;
+				system ("cls");
+				printf ("Informe o CPF do Cliente: ");
+				while(i <= 11){
+					auxCpf[i] = getche();
+					if (i == 2)
+						printf (".");
+					if (i == 5)
+						printf (".");
+					if (i == 8)
+						printf ("-");
+					if (i == 11)
+						auxCpf[12] = '\0';
+				}
+				aux = RecebeCPF(auxCpf);
+			}while (aux == 0);
+			if (aux == 2)
+				break;
+			else
+				RemoverCliente (arqCliente, auxCpf);
+			break;
+		case '5':
+			break;
 		default: printf ("Opcao invalida \n");
 		}
 	} while (op != '5');

@@ -6,6 +6,7 @@
 #include <conio.h>
 #include <windows.h>
 #include <ctype.h>
+#include <time.h>
 
 typedef struct cliente {
 	char cpf[12];          //PORUQE TEM QUE SER CHAR?
@@ -15,10 +16,15 @@ typedef struct cliente {
 	int status;
 }TCliente;
 
-void CadastrarCliente (FILE * arq);
-void AlterarCliente (FILE * arq);
-void ExibirCliente (FILE * arq);
-void RemoverCliente (FILE * arq);
+int RecebeCPF(char cpf[]);
+char * gerarMaiusculo (char nome[]);
+void CadastrarNome (TCliente * c);
+void CadastrarTelefone (TCliente * c);
+void CadastrarEmail (TCliente * c);
+void CadastrarCliente (FILE * arq, char cpf []);
+void AlterarCliente (FILE * arq, char cpf []);
+void ExibirCliente (FILE * arq, char cpf []);
+void RemoverCliente (FILE * arq, char cpf []);
 int BuscarCliente (FILE * arq, char cpf []);
 int ValidaCPF (char cpf[]);
 int ValidaNome (char nome[]);
