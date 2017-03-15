@@ -15,10 +15,8 @@ int RecebeCPF(char cpf[]){
 			{
 				printf("Opcao invalida. Deseja recadastrar o CPF? (S/N) \n");
 			}
-			else if (op == 78 || op == 110){
-				sair = 1;
+			else if (op == 78 || op == 110)
 				return 2;                             // se for invalido e nao deseja tentar novamente
-			}
 			else
 				return 0;                    //se for invalido e desejar tentar denovo
 		}while(1);
