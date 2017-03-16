@@ -1,4 +1,4 @@
-#ifndef HEADERPASSAGEM_H_
+ #ifndef HEADERPASSAGEM_H_
 #define HEADERPASSAGEM_H_
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,8 +16,9 @@ typedef struct passagem {
 
 TPass * CadastroPassagem (char origem[], char destino[], char data[], char cpf[]);   //  CONFERIR  VARIAVEIS DE ENTRADA
 void CadastrarPassagem (FILE * arq, char origem[], char destino[], char data[]);
-void ConsultarPassagem (FILE * arq, char cpf []);
+void ConsultarPassagem (FILE * arqPass, FILE * arqVoo,char cpf []);
 void CancelarPassagem (FILE * arq, char cod[]);
 void ConsultarVoo (FILE * arq, char cod[]);  //  CONSULTA PASSAGEIROS DE UM VOO
+int BuscarPassagem (FILE * arq, char cpf [], int pos);
 
 #endif /* HEADERPASSAGEM_H_ */

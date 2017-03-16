@@ -27,9 +27,11 @@ int RecebeCPF(char cpf[]){
 
 char * gerarMaiusculo (char nome[]){
 	char maiusculo [100];
+        maiusculo = (char *)malloc(100 * sizeof(char));
 	int i;
 	for(i=0; nome[i]!= '\0'; i++)
 		maiusculo[i] = toupper(nome[i]);
+        maiusculo[i] = '\0';
 	return maiusculo;
 }
 
@@ -265,7 +267,7 @@ int BuscarCliente (FILE * arq, char cpf [])
 			else
 			{
 				cont++;
-				if (c.status == 1 && strcmp (c.nome, cpf) == 0)
+				if (c.status == 1 && strcmp (c.cpf, cpf) == 0)
 					return cont;
 			}
 		}

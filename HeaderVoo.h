@@ -10,8 +10,10 @@ typedef struct voo {
 	char codVoo [8];
 	char origem [100];
 	char destino [100];
-	char data [9];
-	char horario [5];
+	char dia [3];
+        char mes [3];
+	char hora [3];
+        char min [3];
 	int poltronas;
 	int mapaPoltronas [6][6];
 	float valor;
