@@ -101,7 +101,7 @@ int main () {
     return 0;
 }
 
-void ModuloCliente (FILE * arqCliente){
+void ModuloCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente){
 	char op, auxCpf[12];
 	int i, aux;
 	do {
@@ -205,7 +205,7 @@ void ModuloCliente (FILE * arqCliente){
 			if (aux == 2)
 				break;
 			else
-				RemoverCliente (arqCliente, auxCpf);
+				RemoverCliente (arqPassagem,arqVoo,arqCliente, auxCpf);
 			break;
 		case '5':
 			break;

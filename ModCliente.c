@@ -222,9 +222,9 @@ void ExibirCliente (FILE * arq, char cpf []) {
 	}
 }
 
-void RemoverCliente (FILE * arq, char cpf []) {
+void RemoverCliente (FILE * arqPass, FILE * arqVoo,FILE * arq, char cpf []) {
 	TCliente c;
-	int pos, status;
+	int pos, status, valida;
 
 	pos = BuscarCliente (arq, cpf);
 	if (pos == -1)
@@ -237,13 +237,19 @@ void RemoverCliente (FILE * arq, char cpf []) {
 		if (status != 1)
 			printf ("Erro de leitura \n");
 		else {
-			c.status = 0;
-			fseek(arq, -sizeof(TCliente), 1);
-			status = fwrite (&c,sizeof (TCliente), 1, arq);
-			if (status != 1)
-				printf ("Erro de gravacao \n");
-			else
-				printf ("Cliente removido com sucesso \n");
+                    valida = validaRemocao (arqPass,arqVoo,cpf);
+                    if (valida == 1)
+                        printf ("Nao e possivel excluir esse cliente no momento. Ele ainda possui reseva para voos futuros. \n");
+                    else
+                    {
+                        c.status = 0;
+                        fseek(arq, -sizeof(TCliente), 1);
+                        status = fwrite (&c,sizeof (TCliente), 1, arq);
+                        if (status != 1)
+                            printf ("Erro de gravacao \n");
+                        else
+                            printf ("Cliente removido com sucesso \n");
+                    }
 		}
 	}
 }

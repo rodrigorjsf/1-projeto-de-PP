@@ -28,7 +28,43 @@ int BuscarPassagem (FILE * arq, char cpf [], int pos)
         }
     }
 }
-
+int validaRemocao (FILE * arqPass, FILE * arqVoo,char cpf[])
+{
+    int pos, posAux = -1;
+    int voo, status, validar = 0;
+    TPass p;
+    TVoo v;
+    do{
+    pos = BuscarPassagem (arqPass, cpf, posAux);
+    posAux = pos;
+    if (pos == -1)
+        return validar;
+    else if (pos == -2)
+        printf ("Erro de leitura \n");
+    else 
+    {
+        fseek(arqPass, pos * sizeof (TPass), 0);
+        status = fread (&p,sizeof (TPass), 1, arqPass);
+        if (status != 1)
+            printf ("Erro de leitura \n");
+        else {
+            voo = BuscarVoo(arqVoo, p.codVoo);
+            if (voo == -1)
+                return validar;
+            else if (voo == -2)
+                printf ("Erro de leitura \n");
+            else
+            {                
+                fseek(arqVoo, voo * sizeof (TVoo), 0);
+                status = fread (&v,sizeof (TVoo), 1, arqVoo);
+                validar = comparaHora (v.dia, v.mes, v.hora, v.min);  
+                if (validar == 1)
+                    return validar;                       
+            }
+        }
+    }
+    }while (pos == -1);
+}
 void ConsultarPassagem (FILE * arqPass, FILE * arqVoo,char cpf [])
 {
     int pos, posAux = -1,cont = 0;
