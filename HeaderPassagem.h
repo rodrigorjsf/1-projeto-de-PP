@@ -14,12 +14,12 @@ typedef struct passagem {
 	int status;
 }TPass;
 
+
 TPass * CadastroPassagem (char origem[], char destino[], char data[], char cpf[]);   //  CONFERIR  VARIAVEIS DE ENTRADA
 void CadastrarPassagem (FILE * arq, char origem[], char destino[], char data[]);
-void ConsultarPassagem (FILE * arqPass, FILE * arqVoo,char cpf []);
+void ConsultarPassagem (FILE * arqCliente, FILE * arqPass, FILE * arqVoo,char cpf []);
 void CancelarPassagem (FILE * arq, char cod[]);
 void ConsultarVoo (FILE * arq, char cod[]);  //  CONSULTA PASSAGEIROS DE UM VOO
 int BuscarPassagem (FILE * arq, char cpf [], int pos);
-int validaRemocao (FILE * arqPass, FILE * arqVoo,char cpf[]);
 
 #endif /* HEADERPASSAGEM_H_ */

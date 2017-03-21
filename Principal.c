@@ -2,17 +2,6 @@
 #include "HeaderCliente.h"
 #include "HeaderPassagem.h"
 #include "HeaderVoo.h"
-#DEFINE ANO_ATUAL 2017
-
-typedef struct data {
-	char dia[3];
-        char mes[3];
-}Data;
-
-typedef struct horario {
-        char hora[3];
-        char min[3];
-}Horario;
 
 FILE * criarArquivo (char nome[]) {
 	FILE * arq;
@@ -23,53 +12,12 @@ FILE * criarArquivo (char nome[]) {
 	return arq;
 }
 
-void ModuloCliente (FILE * arqCliente);
-void ModuloPassagem (FILE * arqPassagem);
+void ModuloCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente);
+void ModuloPassagem (FILE * arqPassagem, FILE * arqVoo, FILE * arqCliente);
 void ModuloVoo (FILE * arqVoo);
 
-int comparaHora (char dia[], char mes[], char hora[], char min[])
-{
-    Data d;
-    time_t tp;
-    struct tm *local;
-    Horario h;
-    int validar, dias;
-    tp = time (NULL);
-    local = localtime (&tp);
-    strftime(d.dia, sizeof(d.dia), "%d", local);
-    strftime(d.mes, sizeof(d.mes), "%m", local);
-    strftime(h.hora, sizeof(h.hora), "%H", local);
-    strftime(h.min, sizeof(h.min), "%M", local);
-    if (strcmp (mes, d.mes) < 0) 
-        return 0;
-    else if (strcmp (mes, d.mes) == 0)    //mes igual
-    {
-        if (strcmp (dia, d.dia) < 0)
-            return 0;
-        else if (strcmp (dia, d.dia) == 0)
-        {
-            if(strcmp (hora, h.hora) < 0)
-                return 0;
-            else if (strcmp (hora, h.hora) == 0)
-            {
-                if ((strcmp (min, h.min) < 0))
-                    return 0;
-                else
-                    return 1;
-            }
-            else
-                return 1;
-        }
-        else
-            return 1;             
-    }
-    else
-        return 1;  
-}
-
 int main () {
-	int i;
-	char op, codAux[100], nomeArqum [] = "Cliente.dat", nomeArqdois [] = "Passagem.dat", nomeArqtres [] = "Voo.dat";
+	char op, nomeArqum [] = "Cliente.dat", nomeArqdois [] = "Passagem.dat", nomeArqtres [] = "Voo.dat";
 	FILE * arqCliente,*arqPassagem,*arqVoo;
 	arqCliente = criarArquivo (nomeArqum);
 	arqPassagem = criarArquivo (nomeArqdois);
@@ -86,13 +34,13 @@ int main () {
 		   printf ("Digite a opcao: ");
 		   op = getchar (); fflush (stdin);
 		   switch (op) {
-		   case '1': ModuloCliente (arqCliente);
+		   case '1': ModuloCliente (arqPassagem, arqVoo, arqCliente);
 				     break;
-		   case '2': ModuloPassagem (arqPassagem);
+		   case '2': ModuloPassagem (arqPassagem, arqVoo, arqCliente);
 				     break;
 		   case '3': ModuloVoo (arqVoo);
 				     break;
-		   case '4': manutencao (arqVoo);     //FALTA VERIFICAR SE E ISSO MESMO
+		   case '4': //manutencao (arqVoo);     //FALTA VERIFICAR SE E ISSO MESMO
 		             break;
 		   default: printf ("Opcao invalida \n");
 		   }
@@ -214,7 +162,7 @@ void ModuloCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente){
 	} while (op != '5');
 }
 
-void ModuloPassagem (FILE * arqPassagem, FILE * arqVoo){
+void ModuloPassagem (FILE * arqPassagem, FILE * arqVoo, FILE * arqCliente){
 	char op, cpfAux [12],codReservaAux[20], codVooAux[20], origem[100], destino[100], data[9];
 	do {
 		system ("cls");
@@ -237,7 +185,7 @@ void ModuloPassagem (FILE * arqPassagem, FILE * arqVoo){
 			      break;
 		case '2': printf ("Informe o cpf do Cliente: ");
 				  gets (cpfAux); fflush (stdin);
-				  ConsultarPassagem (arqPassagem, arqVoo, cpfAux);
+				  ConsultarPassagem (arqCliente, arqPassagem, arqVoo, cpfAux);
 				  break;
 		case '3': printf ("Informe o Codigo da Reserva: ");
 				  gets (codReservaAux); fflush (stdin);
@@ -254,7 +202,8 @@ void ModuloPassagem (FILE * arqPassagem, FILE * arqVoo){
 }
 
 void ModuloVoo (FILE * arqVoo){
-	char op, codVooAux[20], origem[100], destino[100], data[9];
+	char op, codVooAux[8];
+	int i;
 	do {
 		system ("cls");
 		printf ("-------------------- Modulo de Voo -------------------- \n");
@@ -268,18 +217,21 @@ void ModuloVoo (FILE * arqVoo){
 		switch (op) {
 		case '1': CadastrarVoo (arqVoo);
 			      break;
-		case '2': printf ("Informe a Origem: ");
-                  gets (origem); fflush (stdin);
-                  printf ("Informe o Destino: ");
-                  gets (destino); fflush (stdin);
-                  printf ("Informe a data do voo: ");
-                  gets (data); fflush (stdin);           // TIRAR DUVIDA SOBRE COLAR BARRAS NA DATA
-				  ProcurarVoo (arqVoo, origem, destino, data);
+		case '2': menuProcurarVoo (arqVoo);
 				  break;
-		case '3': printf ("Informe o Codigo do Voo: ");
-				  gets (codVooAux); fflush (stdin);
-				  AlterarValorPassagem (arqVoo, codVooAux);
-				  break;
+		case '3':
+			do
+			{
+				i = 0;
+				system ("cls");
+				printf ("Informe o Codigo do Voo: ");
+				while(i <= 7){
+					codVooAux[i] = getche();
+					if (i == 7)
+						codVooAux[8] = '\0';
+				}
+			}while (strlen(cpf) != 7);
+			break;
 		case '4': printf ("Informe o Codigo do Voo: ");
 				  gets (codVooAux); fflush (stdin);
 				  CancelarVoo (arqVoo, codVooAux);

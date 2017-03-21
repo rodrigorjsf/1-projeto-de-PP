@@ -1,10 +1,86 @@
 #include "HeaderCliente.h"
+#include "HeaderPassagem.h"
+#include "HeaderVoo.h"
+
+
+int comparaHora (char dia[], char mes[], char hora[], char min[])
+{
+    Data d;
+    time_t tp;
+    struct tm *local;
+    Horario h;
+    tp = time (NULL);
+    int diaLocal, diaRecebido, mesLocal, mesRecebido;
+    int horaLocal, horaRecebido, minLocal, minRecebido;
+    local = localtime (&tp);
+    strftime(d.dia, sizeof(d.dia), "%d", local);
+    strftime(d.mes, sizeof(d.mes), "%m", local);
+    strftime(h.hora, sizeof(h.hora), "%H", local);
+    strftime(h.min, sizeof(h.min), "%M", local);
+    diaLocal = atoi (d.dia);
+    diaRecebido = atoi (dia);
+    mesLocal = atoi (d.mes);
+	mesRecebido = atoi (mes);
+	horaLocal = atoi (h.hora);
+	horaRecebido = atoi (hora);
+	minLocal = atoi (h.min);
+	minRecebido = atoi (min);
+	if (mesRecebido < mesLocal)
+		return 0;
+	else if (mesRecebido == mesLocal)    //mes igual
+		{
+		if (diaRecebido < diaLocal)
+			return 0;
+		else if (diaRecebido == diaLocal)
+		{
+			if(horaRecebido < horaLocal)
+				return 0;
+			else if (horaRecebido == horaLocal)
+			{
+				if (minRecebido < minLocal)
+					return 0;
+				else
+					return 1;
+			}
+			else
+				return 1;
+		}
+		else
+			return 1;
+		}
+	else
+		return 1;
+    /*if (strcmp (mes, d.mes) < 0)
+        return 0;
+    else if (strcmp (mes, d.mes) == 0)    //mes igual
+    {
+        if (strcmp (dia, d.dia) < 0)
+            return 0;
+        else if (strcmp (dia, d.dia) == 0)
+        {
+            if(strcmp (hora, h.hora) < 0)
+                return 0;
+            else if (strcmp (hora, h.hora) == 0)
+            {
+                if ((strcmp (min, h.min) < 0))
+                    return 0;
+                else
+                    return 1;
+            }
+            else
+                return 1;
+        }
+        else
+            return 1;
+    }
+    else
+        return 1; */
+}
 
 int RecebeCPF(char cpf[]){
 
-	int i, validar, sair = 0;
+	int validar;
 	char op;
-	i = 0;
 	validar = ValidaCPF (cpf);
 	if (validar == 0)
 	{
@@ -25,19 +101,201 @@ int RecebeCPF(char cpf[]){
 		return 1;	                                               /////////// se for valido
 }
 
-char * gerarMaiusculo (char nome[]){
-	char maiusculo [100];
-        maiusculo = (char *)malloc(100 * sizeof(char));
+int BuscarCliente (FILE * arq, char cpf [])
+{
+	int cont = -1, status;
+		TCliente c;
+
+		fseek (arq, 0, 0);
+		while (1)
+		{
+			status = fread (&c, sizeof (TCliente), 1, arq);
+			if (status != 1)
+			{
+				if (!feof(arq))
+				    return -2; // erro de leitura
+				else
+					return -1; // nao achou
+			}
+			else
+			{
+				cont++;
+				if (c.status == 1 && strcmp (c.cpf, cpf) == 0)
+					return cont;
+			}
+		}
+}
+
+int ValidaCPF (char cpf[]){
+	int icpf[12];
+	int i = 0,soma=0,digito1,result1,result2,digito2,valor;
+
+	do{
+		if (isdigit(cpf[i]) == 0)
+		{
+			printf ("CPF Invalido. Informe uma sequencia de 11 numeros sem espacos entre eles.");
+			system ("pause");
+			return 0;
+		}
+		else
+			i++;
+	}while (i != 12);
+	for(i=0;i<11;i++)  //Efetua a conversao de array de char para um array de int.
+	{
+		icpf[i]=cpf[i]-48;
+	}
+	for(i=0;i<9;i++)  //PRIMEIRO DIGITO.
+	{
+		soma+=icpf[i]*(10-i);
+	}
+	result1=soma%11;
+	if( (result1==0) || (result1==1) )
+	{
+		digito1=0;
+	}
+	else
+	{
+		digito1 = 11-result1;
+	}
+	soma=0;
+	for(i=0;i<10;i++)  //SEGUNDO DIGITO.
+	{
+		soma+=icpf[i]*(11-i);
+	}
+	valor=(soma/11)*11;
+	result2=soma-valor;
+	if( (result2==0) || (result2==1) )
+	{
+		digito2=0;
+	}
+	else
+	{
+		digito2=11-result2;
+	}
+	if((digito1==icpf[9]) && (digito2==icpf[10]))   //RESULTADOS DA VALIDACAO.
+	{
+		printf("\nCPF VALIDADO.\n");
+		return 1;                       // retorna 1 para valido
+	}
+	else
+	{
+		printf("Problema com os digitos. CPF invalido.\n");
+	}
+	return 0;      // retorna 0 para cpf invalido
+}
+
+int validaNome(char nome[]) {
+	int i;
+
+	for (i = 0; i < strlen(nome); i++) {
+		if (nome[i] == '\n') {
+			return 1;
+		}
+		if (isalpha(nome[i]) == 0) {
+			if (isspace(nome[i]) == 0)
+				return 0;
+		}
+	}
+	return 1;
+}
+
+//numeros
+int validaTelefone(char telefone[]) {
+	int i;
+
+	for (i = 0; i < strlen(telefone); i++) {
+		if (telefone[i] == '\n') {
+			return 1;
+		}
+		if (isdigit(telefone[i]) == 0) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
+//letras, numeros, pontos e um @
+int validaEmail(char email[]) {
+	int i, j = 0;
+
+	for (i = 0; i < strlen(email); i++) {
+		if (email[i] == '\n') {
+			return 1;
+		}
+		if (isalnum(email[i]) == 0) {//letra e numero
+			if (email[i] != '.') {//ponto
+				if (email[i] == '@') {//se for arroba j++
+					j++;
+				}
+				if (j > 1) {
+					return 0;
+				}
+				if (email[i] != '@') {//!arroba
+					return 0;
+				}
+			}
+		}
+	}
+
+	if (j == 0)
+		return 0;
+
+	return 1;
+}
+
+int validaRemocao (FILE * arqPass, FILE * arqVoo,char cpf[])
+{
+    int pos, posAux = -1;
+    int voo, status, validar = 0;
+    TPass p;
+    TVoo v;
+    do{
+    pos = BuscarPassagem (arqPass, cpf, posAux);
+    posAux = pos;
+    if (pos == -1)
+        return validar;
+    else if (pos == -2)
+        printf ("Erro de leitura \n");
+    else 
+    {
+        fseek(arqPass, pos * sizeof (TPass), 0);
+        status = fread (&p,sizeof (TPass), 1, arqPass);
+        if (status != 1)
+            printf ("Erro de leitura \n");
+        else {
+            voo = BuscarVoo(arqVoo, p.codVoo);
+            if (voo == -1)
+                return validar;
+            else if (voo == -2)
+                printf ("Erro de leitura \n");
+            else
+            {                
+                fseek(arqVoo, voo * sizeof (TVoo), 0);
+                status = fread (&v,sizeof (TVoo), 1, arqVoo);
+                validar = comparaHora (v.dia, v.mes, v.hora, v.min);  
+                if (validar == 1)
+                    return validar;                       
+            }
+        }
+    }
+    }while (pos != -2);
+    return validar;
+}
+
+char * gerarMaiusculo (char nome[])
+{
+	char * maiusculo;
+	maiusculo = (char *)malloc(100 * sizeof(char));
 	int i;
 	for(i=0; nome[i]!= '\0'; i++)
 		maiusculo[i] = toupper(nome[i]);
-        maiusculo[i] = '\0';
+	maiusculo[i] = '\0';
 	return maiusculo;
 }
 
 void CadastrarNome (TCliente * c)
 {
-	char nomeAux[100], nome [100];
+	char * nomeAux, nome [100];
 	int i;
 	do{
 		i = 0;
@@ -56,8 +314,8 @@ void CadastrarNome (TCliente * c)
 			i++;
 		}
 		if (ValidaNome(nome) == 1){
-			nomeAux = gerarMaiusculo (nome);
-			strcpy(c.nome, nomeAux);
+			nomeAux = gerarMaiusculo(nome);
+			strcpy(c->nome, nomeAux);
 		}
 		else{
 			printf("Nome invalido. Por favor, inserir nome valido. \n");
@@ -88,7 +346,7 @@ void CadastrarTelefone (TCliente * c)
 			i++;
 		}
 		if (ValidaTelefone(tel) == 1)
-			strcpy(c.telefone, tel);
+			strcpy(c->telefone, tel);
 		else{
 			printf("Telefone invalido. Por favor, inserir numero valido. \n");
 			system("pause");
@@ -117,7 +375,7 @@ void CadastrarEmail (TCliente * c)
 			i++;
 		}
 		if (ValidaEmail(email) == 1)
-			strcpy(c.email, email);
+			strcpy(c->email, email);
 		else{
 			printf("E-Mail invalido. Por favor, inserir e-mail valido. \n");
 			system("pause");
@@ -128,8 +386,7 @@ void CadastrarEmail (TCliente * c)
 void CadastrarCliente (FILE * arq, char cpf [])
 {
 	TCliente cliente;
-	int aux, i, validar,sair = 0;
-	char nomeAux [100];
+	int aux;
 
 	aux = BuscarCliente (arq, cpf);
 	if (aux > -1)
@@ -253,134 +510,4 @@ void RemoverCliente (FILE * arqPass, FILE * arqVoo,FILE * arq, char cpf []) {
 		}
 	}
 }
-
-int BuscarCliente (FILE * arq, char cpf [])
-{
-	int cont = -1, status;
-		TCliente c;
-
-		fseek (arq, 0, 0);
-		while (1)
-		{
-			status = fread (&c, sizeof (TCliente), 1, arq);
-			if (status != 1)
-			{
-				if (!feof(arq))
-				    return -2; // erro de leitura
-				else
-					return -1; // nao achou
-			}
-			else
-			{
-				cont++;
-				if (c.status == 1 && strcmp (c.cpf, cpf) == 0)
-					return cont;
-			}
-		}
-}
-
-int ValidaCPF (char cpf[]){
-	int icpf[12];
-	int i = 0,soma=0,digito1,result1,result2,digito2,valor;
-
-	do{
-		if (isdigit(cpf[i]) == 0)
-		{
-			printf ("CPF Invalido. Informe uma sequencia de 11 numeros sem espacos entre eles.");
-			system ("pause");
-			return 0;
-		}
-		else
-			i++;
-	}while (i != 12);
-	for(i=0;i<11;i++)  //Efetua a conversao de array de char para um array de int.
-	{
-		icpf[i]=cpf[i]-48;
-	}
-	for(i=0;i<9;i++)  //PRIMEIRO DIGITO.
-	{
-		soma+=icpf[i]*(10-i);
-	}
-	result1=soma%11;
-	if( (result1==0) || (result1==1) )
-	{
-		digito1=0;
-	}
-	else
-	{
-		digito1 = 11-result1;
-	}
-	soma=0;
-	for(i=0;i<10;i++)  //SEGUNDO DIGITO.
-	{
-		soma+=icpf[i]*(11-i);
-	}
-	valor=(soma/11)*11;
-	result2=soma-valor;
-	if( (result2==0) || (result2==1) )
-	{
-		digito2=0;
-	}
-	else
-	{
-		digito2=11-result2;
-	}
-	if((digito1==icpf[9]) && (digito2==icpf[10]))   //RESULTADOS DA VALIDACAO.
-	{
-		printf("\nCPF VALIDADO.\n");
-		return 1;                       // retorna 1 para valido
-	}
-	else
-	{
-		printf("Problema com os digitos. CPF invalido.\n");
-	}
-	return 0;      // retorna 0 para cpf invalido
-}
-
-int ValidaNome(char nome[]) {
-	int i;
-
-	for (i = 0; nome[i]; i++) {
-		if (isalpha(nome[i]) == 0) {
-			if(isspace(nome[i]) == 0)
-				return 0;
-		}
-	}
-	return 1;
-}
-
-//numeros
-int ValidaTelefone(char telefone[]) {
-	int i;
-
-	for (i = 0; telefone[i]; i++) {
-		if (isdigit(telefone[i]) == 0) {
-			return 0;
-		}
-	}
-	return 1;
-}
-
-//letras, numeros, pontos e um @
-int ValidaEmail(char email[]) {
-	int i, j = 0;
-
-	for (i = 0; email[i]; i++) {
-		if (isalnum(email[i]) == 0) {//letra e numero
-			if (email[i] != 46) {//ponto
-				if (email[i] == 64) {//se for arroba i++
-					j++;
-				}
-				if (j > 1) {
-					return 0;
-				}
-				if (email[i] != 64) {//arroba
-					return 0;
-				}
-			}
-		}
-	}
-	return 1;
-}
-
 
