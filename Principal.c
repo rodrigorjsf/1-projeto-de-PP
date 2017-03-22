@@ -113,7 +113,7 @@ void ModuloPassagem (FILE * arqPassagem, FILE * arqVoo, FILE * arqCliente){
 	} while (op != '5');
 }
 
-void ModuloVoo (FILE *arqPass, FILE *arqCliente, FILE * arqVoo ){
+void ModuloVoo (FILE * arqPass, FILE * arqCliente, FILE * arqVoo ){
 	char op;
 	do {
 		system ("cls");

@@ -32,9 +32,9 @@ int BuscarPassagem (FILE * arq, char cpf [], int pos)
 }
 
 int validaCodReserva(char cod[]) {
-	int i;
-
-	for (i = 0; i < strlen(cod); i++) {
+	int i, aux;
+	aux = strlen(cod);
+	for (i = 0; i < aux; i++) {
 		if (cod[i] == '\n') {
 			return 1;
 		}
@@ -383,7 +383,7 @@ void venderPassagem(FILE *arqPass, FILE *arqCliente, FILE *arqVoo, int origem, i
 
 
 
-void cancelarPassagem(FILE *arqPass, FILE *arqVoo, int codReserva) {
+void cancelarPassagem(FILE *arqPass, FILE *arqVoo, char codReserva[]) {
 	TPass passagem;
 	TVoo voo;
 	char op, num[3];

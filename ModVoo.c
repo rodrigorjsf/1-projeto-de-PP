@@ -577,7 +577,7 @@ void menuProcurarVoo (FILE *arqPass, FILE *arqCliente,FILE * arqVoo ,char op)
 	//fgets(destino, sizeof(destino), stdin);
 	do{
 	CadastrarHorario(&h);
-	data = ValidaHora(h.hora,h.min);
+	data = ValidaHora(h);
 	if (data == 0)
 		printf ("Data invaldia \n");
 	else

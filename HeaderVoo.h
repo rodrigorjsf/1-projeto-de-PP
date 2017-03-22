@@ -38,6 +38,6 @@ int RecebeCodVoo(char cod[]);
 void AlterarValorPassagem (FILE * arq, char cod[]);
 void CancelarVoo (FILE * arq, char cod[]);
 void menuProcurarVoo (FILE *arqPass, FILE *arqCliente,FILE * arqVoo ,char op);
-void MenuVOO (FILE * arqVoo, char op);
+void MenuVOO (FILE *arqPass, FILE *arqCliente,FILE * arqVoo ,char op);
 
 #endif /* HEADERVOO_H_ */
