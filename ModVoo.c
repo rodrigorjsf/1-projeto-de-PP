@@ -30,13 +30,57 @@ void gerarCodigo (TVoo * v)
 		n = rand() % 26;
 		cod[i] = letras[n];
 	}
-	for(i = 3;i < 8;i++){
+	for(i = 3;i < 7;i++){
 		aux = (rand() % 9) + 48;
 		cod[i] = aux;
 	}
 	i++;
 	cod[i] = '\0';
 	strcpy (v->codVoo,cod);
+}
+
+int BuscarVoo(FILE * arq, char cod[]) {
+	int cont = -1, status;
+	TVoo v;
+	fseek(arq, 0, 0);
+	while (1) {
+		status = fread(&v, sizeof(TVoo), 1, arq);
+		if (status != 1) {
+			if (!feof(arq))
+				return -2;
+			else
+				return -1;
+		}
+		else {
+			cont++;
+			if (v.status == 1 && strcmp(v.codVoo, cod) == 0)
+				return cont;
+		}
+	}
+
+}
+int RecebeCOD(char cod[]){
+
+	int validar;
+	char op;
+	validar = ValidaCodVoo (cod);
+	if (validar == 0)
+	{
+		printf("Codigo invalido, deseja tentar denovo? (S/N) \n");
+		do{
+			op = getche();
+			if (op != 78 && op != 83 && op != 110 && op != 115)
+			{
+				printf("Opcao invalida. deseja tentar denovo? (S/N) \n");
+			}
+			else if (op == 78 || op == 110)
+				return 2;                             // se for invalido e nao deseja tentar novamente
+			else
+				return 0;                    //se for invalido e desejar tentar denovo
+		}while(1);
+	}
+	else
+		return 1;	                                               /////////// se for valido
 }
 
 int ValidaCodVoo(char cod[]) {
@@ -73,11 +117,11 @@ int bissexto (int ano){
 	return 0;
 }
 
-int validaDataCorreta(char dia[], char mes[]){
+int validaDataCorreta(Data d){
 	int diaAux,mesAux,quantDias, ano;
 	int QuantDias1[12] = { 31,28,31,30,31,30,31,31,30,31,30,31};
-        diaAux = atoi (dia);
-        mesAux = atoi (mes);
+        diaAux = atoi (d.dia);
+        mesAux = atoi (d.mes);
 	ano = bissexto(ANO);
 	if (mesAux < 1 || mesAux > 12)
 		return 0;
@@ -100,10 +144,10 @@ int validaDataCorreta(char dia[], char mes[]){
 	return 1;
 }
 
-int validaHoraCorreta (char hora[], char min[]){
+int validaHoraCorreta (Horario horario){
     int horaAux,minAux;
-    horaAux = atoi (hora);
-    minAux = atoi (min);
+    horaAux = atoi (horario.hora);
+    minAux = atoi (horario.min);
     if (horaAux < 0 || horaAux > 23)
         return 0;
     if (minAux < 0 || minAux > 59)
@@ -111,24 +155,24 @@ int validaHoraCorreta (char hora[], char min[]){
     return 1;
 }
 
-int ValidaData(char dia[], char mes[]) {
+int ValidaData(Data d) {
 	int i;
 
 	for (i = 0; i < 2; i++) {
-		if(dia[i] == '\0')
+		if(d.dia[i] == '\0')
 			return 1;
-		if (isdigit(dia[i]) == 0)
+		if (isdigit(d.dia[i]) == 0)
 			return 0;
 	}
         i = 0;
 	for (i = 0; i < 2; i++) {
-		if(dia[i] == '\0')
+		if(d.dia[i] == '\0')
 			return 1;
-		if (isdigit(mes[i]) == 0)
+		if (isdigit(d.mes[i]) == 0)
 			return 0;
 
 	}
-	if (validaDataCorreta(dia,mes) == 0)
+	if (validaDataCorreta(d) == 0)
             return 0;
 	return 1;
 }
@@ -136,20 +180,20 @@ int ValidaData(char dia[], char mes[]) {
 
 
 
-int ValidaHora(char hora[], char min[]) {
+int ValidaHora(Horario horario) {
 	int i;
 
 	for (i = 0; i < 2; i++) {
-		if (isdigit(hora[i]) == 0) {
+		if (isdigit(horario.hora[i]) == 0) {
 			return 0;
 		}
 	}
 	for (i = 0; i < 2; i++) {
-		if (isdigit(min[i]) == 0) {
+		if (isdigit(horario.min[i]) == 0) {
 			return 0;
 		}
 	}
-        if (validaHoraCorreta(hora,min) == 0)
+        if (validaHoraCorreta(horario) == 0)
             return 0;
 	return 1;
 }
@@ -185,7 +229,7 @@ int ValidaHora(char hora[], char min[]) {
 void CadastrarData (TVoo * v)
 {
     int i;
-    char dia[3], mes[3];
+    Data data;
     do
     {
         i = 0;
@@ -195,16 +239,16 @@ void CadastrarData (TVoo * v)
         {
 
             if (i == 0)
-            	dia[i] = getche();
+            	data.dia[i] = getche();
             else{
-            	dia[i] = getche();
-            	if (dia[i] == 13)
+            	data.dia[i] = getche();
+            	if (data.dia[i] == 13)
             	{
-            		dia[i] = '\0';
+            		data.dia[i] = '\0';
             		break;
             	}
             	else
-            		dia[2] = '\0';
+            		data.dia[2] = '\0';
             }
             i++;
         }
@@ -214,34 +258,34 @@ void CadastrarData (TVoo * v)
         while (i < 2)
         {
         	if (i == 0)
-        		mes[i] = getche();
+        		data.mes[i] = getche();
         	else{
-        		mes[i] = getche();
-        		if (mes[i] == 13)
+        		data.mes[i] = getche();
+        		if (data.mes[i] == 13)
         		{
-        			mes[i] = '\0';
+        			data.mes[i] = '\0';
         			break;
         		}
         		else
-        			mes[2] = '\0';
+        			data.mes[2] = '\0';
         	}
         	i++;
         }
-        if (ValidaData(dia, mes) == 0 ){
+        if (ValidaData(data) == 0 ){
             printf("Data invalida, digite novamente. \n");
             system("pause");
         }                    
         else{
-            strcpy(v->dia, dia);
-            strcpy(v->mes, mes);
+            strcpy(v->dia, data.dia);
+            strcpy(v->mes, data.mes);
         }
-    } while (ValidaData(dia, mes) == 0);
+    } while (ValidaData(data) == 0);
 }
 
 void CadastrarHorario (Horario * h)
 {
     int i, j;
-    char hora[3], min[3];
+    Horario horario;
     do 
     {
         i = 0;
@@ -254,45 +298,46 @@ void CadastrarHorario (Horario * h)
             if (j < 3 && i < 3)
             {                           
                 if (j == 2){
-                    hora[3] = '\0';                  
+                	horario.hora[3] = '\0';
                     printf(":");
                     j = 0;
                 }
                 else{
-                    hora[i] = getche();
+                	horario.hora[i] = getche();
                     j++;
                 }
             }
             else
             {
                 if (j == 2){
-                    min[3] = '\0';
+                	horario.min[3] = '\0';
                     j = 0;
                 }
                 else{
-                    min[i] = getche();  
+                	horario.min[i] = getche();
                     j++;
                 }
             }                     
             i++;
         }                                   
-        if (ValidaHora(hora, min) == 0){
+        if (ValidaHora(horario) == 0){
             printf("Horario invalido, digite novamente. \n");
             system("pause");
         }
         else{
-            strcpy(h->hora, hora);
-            strcpy(h->min, min);
+            strcpy(h->hora, horario.hora);
+            strcpy(h->min, horario.min);
         }
-    } while (ValidaHora(hora, min) == 0);    
+    } while (ValidaHora(horario) == 0);
 }
 
 void CadastrarVoo(FILE * arq)
 {
 	TVoo v;
 	Horario h;
-	int aux, i, j;
+	int aux, i, j, origemAux, destinoAux;
 	char cod[8];
+	char Locais[10][100] = {"RECIFE","SALVADOR","AO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE","ARACAJU"};
 	gerarCodigo(&v);
 	aux = BuscarVoo(arq, cod);
 	if (aux < 0) {
@@ -300,17 +345,28 @@ void CadastrarVoo(FILE * arq)
 	}
 	else {
 		strcpy(v.codVoo, cod);
-		printf("Digite a origem: \n");
-		fgets(v.origem, sizeof(v.origem), stdin);
-		fflush(stdin);
-
-		printf("Digite o destino: \n");
-		fgets(v.destino, sizeof(v.destino), stdin);
-		fflush(stdin);
+		opcoesOrigem ();
+		do
+		{
+			printf ("Informe a Origem: (1 a 10");
+			scanf("%i" ,&origemAux); fflush(stdin);
+			if (origemAux < 1 || origemAux > 10)
+				printf ("Opcao invalida. \n");
+		}while (origemAux < 1 || origemAux > 10);
+		strcpy (v.origem, Locais[origemAux-1]);
+		opcoesDestinos ();
+		do
+		{
+			printf ("Informe o Destino: (1 a 10)");
+			scanf("%i" ,&destinoAux); fflush(stdin);
+			if (destinoAux < 1 || destinoAux > 10)
+				printf ("Opcao invalida. \n");
+		}while (destinoAux < 1 || destinoAux > 10);
+		strcpy (v.destino, Locais[destinoAux-1]);
 		CadastrarData(&v);
 		CadastrarHorario(&h);
-		strcpy(h.hora, v.hora);
-		strcpy(h.min, v.min);
+		strcpy(v.hora, h.hora);
+		strcpy(v.min, h.min);
 		v.poltronas = 36;
 		for (i = 0; i < 6; i++) 
                 {
@@ -327,10 +383,11 @@ void CadastrarVoo(FILE * arq)
 
 }
 
-void ProcurarVoo (FILE * arq, char origem[], char destino[], char hora[], char min[])
+void ProcurarVoo (FILE * arq, int origem, int destino, Horario h)
 {
     TVoo voo;
     int status, aux;
+    char Locais[10][100] = {"RECIFE","SALVADOR","AO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE","ARACAJU"};
     fseek (arq, 0, 0);
     while (1) 
     {
@@ -347,7 +404,8 @@ void ProcurarVoo (FILE * arq, char origem[], char destino[], char hora[], char m
         {
             do
             {
-                if(voo.destino == destino && voo.origem == origem  && voo.hora == hora  && voo.min == min){
+                if(strcmp(voo.destino,Locais[destino]) == 0 && strcmp(voo.origem,Locais[origem]) == 0  && strcmp(voo.hora,h.hora) == 0  && strcmp(voo.min,h.min) == 0)
+                {
                     printf("Codigo do voo: %s\n", voo.codVoo);
                     printf("Horario do voo: %s:%s\n", voo.hora, voo.min);
                     printf("Cadeiras disponiveis nesse voo: %d", voo.poltronas);
@@ -461,26 +519,7 @@ void AlterarValorPassagem (FILE * arq, char cod[])
 		printf ("Cliente alterado com sucesso \n");
 }
 
-int BuscarVoo(FILE * arq, char cod[]) {
-	int cont = -1, status;
-	TVoo v;
-	fseek(arq, 0, 0);
-	while (1) {
-		status = fread(&v, sizeof(TVoo), 1, arq);
-		if (status != 1) {
-			if (!feof(arq))
-				return -2;
-			else
-				return -1;
-		}
-		else {
-			cont++;
-			if (v.status == 1 && strcmp(v.codVoo, cod) == 0)
-				return cont;
-		}
-	}
 
-}
 
 void CancelarVoo (FILE * arq, char cod[]){
     TVoo voo;
@@ -512,28 +551,93 @@ void CancelarVoo (FILE * arq, char cod[]){
 
 }
 
-void menuProcurarVoo (FILE * arqVoo ){
+void menuProcurarVoo (FILE *arqPass, FILE *arqCliente,FILE * arqVoo ,char op)
+{
 	Horario h;
-	int aux1, aux2, data;
-	char origem[100], destino[100];
+	int data;
+	int origem, destino;
 	opcoesOrigem();
-	printf ("Informe a Origem: ");
-	fgets(origem, sizeof(origem), stdin);
+	do
+	{
+		printf ("Informe a Origem: ");
+		scanf("%i" ,&origem); fflush(stdin);
+		if (origem < 1 || origem > 10)
+			printf ("Opcao invalida. \n");
+	}while (origem < 1 || origem > 10);
+	//fgets(origem, sizeof(origem), stdin);
 	system("cls");
 	opcoesDestinos ();
-	printf ("Informe o Destino: ");
-	fgets(destino, sizeof(destino), stdin);
-	aux2 = validaDestino (destino);
+	do
+	{
+		printf ("Informe o Destino: (1 a 10)");
+		scanf("%i" ,&destino); fflush(stdin);
+		if (destino < 1 || destino > 10)
+			printf ("Opcao invalida. \n");
+	}while (destino < 1 || destino > 10);
+	//fgets(destino, sizeof(destino), stdin);
+	do{
 	CadastrarHorario(&h);
 	data = ValidaHora(h.hora,h.min);
-	if (aux1 == 0 || aux2 == 0 || data == 0){
-		if (aux1 == 0)
-			printf ("Origem Invalida \n");
-		if (aux2 == 0)
-			printf ("Destino Invalido \n");
-		if (data == 0)
-			printf ("Data invaldia \n");
+	if (data == 0)
+		printf ("Data invaldia \n");
+	else
+		if (op == '2')
+			ProcurarVoo (arqVoo, origem, destino, h);
+		else
+			venderPassagem(arqPass, arqCliente, arqVoo, origem, destino, h);
+	}while(data == 0);
+}
+
+
+void MenuVOO (FILE *arqPass, FILE *arqCliente,FILE * arqVoo ,char op)
+{
+	char codVooAux[8];
+	int i, aux;
+	if (op == '1')
+	{
+		CadastrarVoo (arqVoo);
+	}
+	else if (op == '2')
+	{
+		menuProcurarVoo (arqPass,arqCliente,arqVoo,op);
+	}
+	else if (op == '3')
+	{
+		do
+		{
+			i = 0;
+			system ("cls");
+			printf ("Informe o Codigo do Voo: ");
+			while(i <= 7){
+				codVooAux[i] = getche();
+				if (i == 7)
+					codVooAux[8] = '\0';
+			}
+			aux = RecebeCOD(codVooAux);
+		}while (aux == 0);
+		if (aux == 2)
+			return;
+		else
+			AlterarValorPassagem (arqVoo, codVooAux);
 	}
 	else
-		ProcurarVoo (arqVoo, origem, destino, h.hora, h.min);
+	{
+		do
+		{
+			i = 0;
+			system ("cls");
+			printf ("Informe o Codigo do Voo: ");
+			while(i <= 7){
+				codVooAux[i] = getche();
+				if (i == 7)
+					codVooAux[8] = '\0';
+			}
+			aux = RecebeCOD(codVooAux);
+		}while (aux == 0);
+		if (aux == 2)
+			return;
+		else
+			CancelarVoo (arqVoo, codVooAux);
+	}
 }
+

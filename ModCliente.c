@@ -2,7 +2,6 @@
 #include "HeaderPassagem.h"
 #include "HeaderVoo.h"
 
-
 int comparaHora (char dia[], char mes[], char hora[], char min[])
 {
     Data d;
@@ -75,6 +74,16 @@ int comparaHora (char dia[], char mes[], char hora[], char min[])
     }
     else
         return 1; */
+}
+char * gerarMaiusculo (char nome[])
+{
+	char * maiusculo;
+	maiusculo = (char *)malloc(100 * sizeof(char));
+	int i;
+	for(i=0; nome[i]!= '\0'; i++)
+		maiusculo[i] = toupper(nome[i]);
+	maiusculo[i] = '\0';
+	return maiusculo;
 }
 
 int RecebeCPF(char cpf[]){
@@ -282,21 +291,12 @@ int validaRemocao (FILE * arqPass, FILE * arqVoo,char cpf[])
     return validar;
 }
 
-char * gerarMaiusculo (char nome[])
-{
-	char * maiusculo;
-	maiusculo = (char *)malloc(100 * sizeof(char));
-	int i;
-	for(i=0; nome[i]!= '\0'; i++)
-		maiusculo[i] = toupper(nome[i]);
-	maiusculo[i] = '\0';
-	return maiusculo;
-}
+
 
 void CadastrarNome (TCliente * c)
 {
 	char * nomeAux, nome [100];
-	int i;
+	int i, aux;
 	do{
 		i = 0;
 		system("cls");
@@ -313,7 +313,8 @@ void CadastrarNome (TCliente * c)
 			}
 			i++;
 		}
-		if (ValidaNome(nome) == 1){
+		aux = ValidaNome(nome);
+		if (aux == 1){
 			nomeAux = gerarMaiusculo(nome);
 			strcpy(c->nome, nomeAux);
 		}
@@ -321,13 +322,13 @@ void CadastrarNome (TCliente * c)
 			printf("Nome invalido. Por favor, inserir nome valido. \n");
 			system("pause");
 		}
-	}while (ValidaNome(nome) == 0);
+	}while (aux == 0);
 }
 
 void CadastrarTelefone (TCliente * c)
 {
 	char tel[12];
-	int i;
+	int i, aux;
 	do{
 		i = 0;
 		system("cls");
@@ -345,19 +346,20 @@ void CadastrarTelefone (TCliente * c)
 				tel[12] = '\0';
 			i++;
 		}
-		if (ValidaTelefone(tel) == 1)
+		aux = ValidaTelefone(tel);
+		if (aux == 1)
 			strcpy(c->telefone, tel);
 		else{
 			printf("Telefone invalido. Por favor, inserir numero valido. \n");
 			system("pause");
 		}
-	}while (ValidaTelefone(tel) == 0);
+	}while (aux == 0);
 }
 
 void CadastrarEmail (TCliente * c)
 {
 	char email[100];
-	int i;
+	int i, aux;
 	do{
 		i = 0;
 		system("cls");
@@ -374,13 +376,14 @@ void CadastrarEmail (TCliente * c)
 			}
 			i++;
 		}
-		if (ValidaEmail(email) == 1)
+		aux = ValidaEmail(email);
+		if (aux == 1)
 			strcpy(c->email, email);
 		else{
 			printf("E-Mail invalido. Por favor, inserir e-mail valido. \n");
 			system("pause");
 		}
-	}while(ValidaEmail(email) == 0);
+	}while(aux == 0);
 }
 
 void CadastrarCliente (FILE * arq, char cpf [])
@@ -408,7 +411,6 @@ void CadastrarCliente (FILE * arq, char cpf [])
 }
 
 void AlterarCliente(FILE * arq, char cpf []){
-    int escolha;
     TCliente cliente;
     int pos, status;
     char op;
@@ -422,7 +424,7 @@ void AlterarCliente(FILE * arq, char cpf []){
         fseek(arq, pos * sizeof (TCliente), 0);
         status = fread (&cliente,sizeof (TCliente), 1, arq);
     }
-    for (escolha = 1; escolha != 2; ) {
+    do{
     	printf("Escolha o que deseja altrar: ");
     	printf ("1 - Alterar nome \n");
     	printf ("2 - Alterar email \n");
@@ -431,24 +433,20 @@ void AlterarCliente(FILE * arq, char cpf []){
     	printf ("informe a opcao: ");
     	op = getchar (); fflush (stdin);
     	switch (op) {
-    	case 1:
+    	case '1':
     		CadastrarNome (&cliente);
     		break;
-        case 2:
+        case '2':
         	CadastrarEmail (&cliente);
         	break;
-        case 3:
+        case '3':
         	CadastrarTelefone (&cliente);
         	break;
-        case 4:
+        case '4':
         	break;
                 default: printf("Opcao invalida");
-    }
-    	printf("Deseja alterar mais algum dado: \n");
-        printf("1 - Sim \n");
-        printf("2 - Nao \n");
-        escolha = getint(); fflush(stdin);
-    }
+    	}
+    }while(op != '4');
     fseek(arq, -sizeof(TCliente), 1);
     status = fwrite (&cliente,sizeof (TCliente), 1, arq);
     if (status != 1)
@@ -510,4 +508,113 @@ void RemoverCliente (FILE * arqPass, FILE * arqVoo,FILE * arq, char cpf []) {
 		}
 	}
 }
+
+void MenuCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
+{
+	char auxCpf[12];
+	int i, aux;
+	if (op == '1')
+	{
+		do{
+			i = 0;
+			system ("cls");
+			printf ("Informe o CPF do Cliente: ");
+			while(i <= 11){
+				auxCpf[i] = getche();
+				if (i == 2)
+					printf (".");
+				if (i == 5)
+					printf (".");
+				if (i == 8)
+					printf ("-");
+				if (i == 11)
+					auxCpf[12] = '\0';
+			}
+			aux = RecebeCPF(auxCpf);
+		}while (aux == 0);
+		if (aux == 2)
+			return;
+		else
+			CadastrarCliente (arqCliente, auxCpf);
+	}
+	else if (op == '2')
+	{
+		do{
+			i = 0;
+			system ("cls");
+			printf ("Informe o CPF do Cliente: ");
+			while(i <= 11){
+				auxCpf[i] = getche();
+				if (i == 2)
+					printf (".");
+				if (i == 5)
+					printf (".");
+				if (i == 8)
+					printf ("-");
+				if (i == 11)
+					auxCpf[12] = '\0';
+			}
+			aux = RecebeCPF(auxCpf);
+		}while (aux == 0);
+		if (aux == 2)
+			return;
+		else
+			AlterarCliente (arqCliente, auxCpf);
+	}
+	else if (op == '3')
+	{
+		do{
+			i = 0;
+			system ("cls");
+			printf ("Informe o CPF do Cliente: ");
+			while(i <= 11){
+				auxCpf[i] = getche();
+				if (i == 2)
+					printf (".");
+				if (i == 5)
+					printf (".");
+				if (i == 8)
+					printf ("-");
+				if (i == 11)
+					auxCpf[12] = '\0';
+			}
+			aux = RecebeCPF(auxCpf);
+		}while (aux == 0);
+		if (aux == 2)
+			return;
+		else
+			ExibirCliente (arqCliente, auxCpf);
+	}
+	else
+	{
+		do{
+			i = 0;
+			system ("cls");
+			printf ("Informe o CPF do Cliente: ");
+			while(i <= 11){
+				auxCpf[i] = getche();
+				if (i == 2)
+					printf (".");
+				if (i == 5)
+					printf (".");
+				if (i == 8)
+					printf ("-");
+				if (i == 11)
+					auxCpf[12] = '\0';
+			}
+			aux = RecebeCPF(auxCpf);
+		}while (aux == 0);
+		if (aux == 2)
+			return;
+		else
+			RemoverCliente (arqPassagem,arqVoo,arqCliente, auxCpf);
+	}
+}
+
+
+
+
+
+
+
 

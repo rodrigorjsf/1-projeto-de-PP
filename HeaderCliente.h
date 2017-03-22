@@ -26,10 +26,15 @@ typedef struct horario {
         char min[3];
 }Horario;
 
-
-int RecebeCPF(char cpf[]);
-int validaRemocao (FILE * arqPass, FILE * arqVoo,char cpf[]);
+int comparaHora (char dia[], char mes[], char hora[], char min[]);
 char * gerarMaiusculo (char nome[]);
+int RecebeCPF(char cpf[]);
+int BuscarCliente (FILE * arq, char cpf []);
+int ValidaCPF (char cpf[]);
+int ValidaNome (char nome[]);
+int ValidaTelefone (char telefone[]);
+int ValidaEmail (char email[]);
+int validaRemocao (FILE * arqPass, FILE * arqVoo,char cpf[]);
 void CadastrarNome (TCliente * c);
 void CadastrarTelefone (TCliente * c);
 void CadastrarEmail (TCliente * c);
@@ -37,11 +42,9 @@ void CadastrarCliente (FILE * arq, char cpf []);
 void AlterarCliente (FILE * arq, char cpf []);
 void ExibirCliente (FILE * arq, char cpf []);
 void RemoverCliente (FILE * arqPass, FILE * arqVoo,FILE * arq, char cpf []);
-int BuscarCliente (FILE * arq, char cpf []);
-int ValidaCPF (char cpf[]);
-int ValidaNome (char nome[]);
-int ValidaTelefone (char telefone[]);
-int ValidaEmail (char email[]);
+void MenuCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op);
+
+
 
 
 

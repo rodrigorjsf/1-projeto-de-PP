@@ -16,18 +16,28 @@ typedef struct voo {
 	char hora [3];
 	char min [3];
 	int poltronas;
-	int mapaPoltronas [6][6];
+	char mapaPoltronas [6][6];
 	float valor;
 	int status;
 }TVoo;
 
 void gerarCodigo (TVoo * v);
+int BuscarVoo(FILE * arq, char cod[]);
+int RecebeCOD(char cod[]);
+int ValidaCodVoo(char cod[]);
+int bissexto (int ano);
+int validaDataCorreta(Data d);
+int validaHoraCorreta (Horario horario);
+int ValidaData(Data d);
+int ValidaHora(Horario horario);
+void CadastrarData (TVoo * v);
+void CadastrarHorario (Horario * h);
 void CadastrarVoo (FILE * arq);
-void ProcurarVoo (FILE * arq, char origem[], char destino[], char hora[], char min[]);
+void ProcurarVoo (FILE * arq, int origem, int destino, Horario h);
+int RecebeCodVoo(char cod[]);
 void AlterarValorPassagem (FILE * arq, char cod[]);
 void CancelarVoo (FILE * arq, char cod[]);
-int BuscarVoo (FILE * arq, char cod []);
-int ValidaCodVoo (char cod[]);
-int ValidaData(char dia[], char mes[]);
+void menuProcurarVoo (FILE *arqPass, FILE *arqCliente,FILE * arqVoo ,char op);
+void MenuVOO (FILE * arqVoo, char op);
 
 #endif /* HEADERVOO_H_ */

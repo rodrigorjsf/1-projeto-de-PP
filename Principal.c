@@ -1,7 +1,11 @@
-#include <ctype.h>
 #include "HeaderCliente.h"
 #include "HeaderPassagem.h"
 #include "HeaderVoo.h"
+
+
+void ModuloCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente);
+void ModuloPassagem (FILE * arqPassagem, FILE * arqVoo, FILE * arqCliente);
+void ModuloVoo (FILE *arqPass, FILE *arqCliente, FILE * arqVoo );
 
 FILE * criarArquivo (char nome[]) {
 	FILE * arq;
@@ -11,10 +15,6 @@ FILE * criarArquivo (char nome[]) {
 	}
 	return arq;
 }
-
-void ModuloCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente);
-void ModuloPassagem (FILE * arqPassagem, FILE * arqVoo, FILE * arqCliente);
-void ModuloVoo (FILE * arqVoo);
 
 int main () {
 	char op, nomeArqum [] = "Cliente.dat", nomeArqdois [] = "Passagem.dat", nomeArqtres [] = "Voo.dat";
@@ -38,7 +38,7 @@ int main () {
 				     break;
 		   case '2': ModuloPassagem (arqPassagem, arqVoo, arqCliente);
 				     break;
-		   case '3': ModuloVoo (arqVoo);
+		   case '3': ModuloVoo (arqPassagem, arqCliente, arqVoo);
 				     break;
 		   case '4': //manutencao (arqVoo);     //FALTA VERIFICAR SE E ISSO MESMO
 		             break;
@@ -50,8 +50,7 @@ int main () {
 }
 
 void ModuloCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente){
-	char op, auxCpf[12];
-	int i, aux;
+	char op;
 	do {
 		system ("cls");
 		printf ("-------------------- Modulo do Cliente -------------------- \n");
@@ -64,96 +63,16 @@ void ModuloCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente){
 		op = getchar (); fflush (stdin);
 		switch (op) {
 		case '1':
-			do{
-				i = 0;
-				system ("cls");
-				printf ("Informe o CPF do Cliente: ");
-				while(i <= 11){
-					auxCpf[i] = getche();
-					if (i == 2)
-						printf (".");
-					if (i == 5)
-						printf (".");
-					if (i == 8)
-						printf ("-");
-					if (i == 11)
-						auxCpf[12] = '\0';
-				}
-				aux = RecebeCPF(auxCpf);
-			}while (aux == 0);
-			if (aux == 2)
-				break;
-			else
-				CadastrarCliente (arqCliente, auxCpf);
+			MenuCliente (arqPassagem,arqVoo,arqCliente,op);
 			break;
 		case '2':
-			do{
-				i = 0;
-				system ("cls");
-				printf ("Informe o CPF do Cliente: ");
-				while(i <= 11){
-					auxCpf[i] = getche();
-					if (i == 2)
-						printf (".");
-					if (i == 5)
-						printf (".");
-					if (i == 8)
-						printf ("-");
-					if (i == 11)
-						auxCpf[12] = '\0';
-				}
-				aux = RecebeCPF(auxCpf);
-			}while (aux == 0);
-			if (aux == 2)
-				break;
-			else
-				AlterarCliente (arqCliente, auxCpf);
+			MenuCliente (arqPassagem,arqVoo,arqCliente,op);
 			break;
 		case '3':
-			do{
-				i = 0;
-				system ("cls");
-				printf ("Informe o CPF do Cliente: ");
-				while(i <= 11){
-					auxCpf[i] = getche();
-					if (i == 2)
-						printf (".");
-					if (i == 5)
-						printf (".");
-					if (i == 8)
-						printf ("-");
-					if (i == 11)
-						auxCpf[12] = '\0';
-				}
-				aux = RecebeCPF(auxCpf);
-			}while (aux == 0);
-			if (aux == 2)
-				break;
-			else
-				ExibirCliente (arqCliente, auxCpf);
+			MenuCliente (arqPassagem,arqVoo,arqCliente,op);
 			break;
 		case '4':
-			do{
-				i = 0;
-				system ("cls");
-				printf ("Informe o CPF do Cliente: ");
-				while(i <= 11){
-					auxCpf[i] = getche();
-					if (i == 2)
-						printf (".");
-					if (i == 5)
-						printf (".");
-					if (i == 8)
-						printf ("-");
-					if (i == 11)
-						auxCpf[12] = '\0';
-				}
-				aux = RecebeCPF(auxCpf);
-			}while (aux == 0);
-			if (aux == 2)
-				break;
-			else
-				RemoverCliente (arqPassagem,arqVoo,arqCliente, auxCpf);
+			MenuCliente (arqPassagem,arqVoo,arqCliente,op);
 			break;
 		case '5':
 			break;
@@ -163,7 +82,7 @@ void ModuloCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente){
 }
 
 void ModuloPassagem (FILE * arqPassagem, FILE * arqVoo, FILE * arqCliente){
-	char op, cpfAux [12],codReservaAux[20], codVooAux[20], origem[100], destino[100], data[9];
+	char op;
 	do {
 		system ("cls");
 		printf ("-------------------- Modulo de Passagem -------------------- \n");
@@ -175,35 +94,27 @@ void ModuloPassagem (FILE * arqPassagem, FILE * arqVoo, FILE * arqCliente){
 		printf ("informe a opcao: ");
 		op = getchar (); fflush (stdin);
 		switch (op) {
-		case '1': printf ("Informe a Origem: ");
-		          gets (origem); fflush (stdin);
-		          printf ("Informe o Destino: ");
-		          gets (destino); fflush (stdin);
-		          printf ("Informe a data do voo: ");
-		          gets (data); fflush (stdin);           // TIRAR DUVIDA SOBRE COLAR BARRAS NA DATA
-		          CadastrarPassagem (arqPassagem, origem, destino, data);
-			      break;
-		case '2': printf ("Informe o cpf do Cliente: ");
-				  gets (cpfAux); fflush (stdin);
-				  ConsultarPassagem (arqCliente, arqPassagem, arqVoo, cpfAux);
-				  break;
-		case '3': printf ("Informe o Codigo da Reserva: ");
-				  gets (codReservaAux); fflush (stdin);
-				  CancelarPassagem (arqPassagem, codReservaAux);
-				  break;
-		case '4': printf ("Informe o Codigo do Voo: ");
-				  gets (codVooAux); fflush (stdin);
-				  ConsultarVoo (arqPassagem, codVooAux);    //  CONSULTA PASSAGEIROS DE UM VOO
-				  break;
-		case '5': break;
+		case '1':
+			MenuPassagem (arqPassagem,arqVoo,arqCliente,op);
+			break;
+		case '2':
+			MenuPassagem (arqPassagem,arqVoo,arqCliente,op);
+			break;
+		case '3':
+			MenuPassagem (arqPassagem,arqVoo,arqCliente,op);
+			break;
+		case '4':
+			MenuPassagem (arqPassagem,arqVoo,arqCliente,op);
+			break;
+		case '5':
+			break;
 		default: printf ("Opcao invalida \n");
 		}
 	} while (op != '5');
 }
 
-void ModuloVoo (FILE * arqVoo){
-	char op, codVooAux[8];
-	int i;
+void ModuloVoo (FILE *arqPass, FILE *arqCliente, FILE * arqVoo ){
+	char op;
 	do {
 		system ("cls");
 		printf ("-------------------- Modulo de Voo -------------------- \n");
@@ -215,27 +126,18 @@ void ModuloVoo (FILE * arqVoo){
 		printf ("informe a opcao: ");
 		op = getchar (); fflush (stdin);
 		switch (op) {
-		case '1': CadastrarVoo (arqVoo);
-			      break;
-		case '2': menuProcurarVoo (arqVoo);
-				  break;
-		case '3':
-			do
-			{
-				i = 0;
-				system ("cls");
-				printf ("Informe o Codigo do Voo: ");
-				while(i <= 7){
-					codVooAux[i] = getche();
-					if (i == 7)
-						codVooAux[8] = '\0';
-				}
-			}while (strlen(cpf) != 7);
+		case '1':
+			MenuVOO (arqPass,arqCliente,arqVoo ,op);
 			break;
-		case '4': printf ("Informe o Codigo do Voo: ");
-				  gets (codVooAux); fflush (stdin);
-				  CancelarVoo (arqVoo, codVooAux);
-				  break;
+		case '2':
+			MenuVOO (arqPass,arqCliente,arqVoo ,op);
+			break;
+		case '3':
+			MenuVOO (arqPass,arqCliente,arqVoo ,op);
+			break;
+		case '4':
+			MenuVOO (arqPass,arqCliente,arqVoo ,op);
+			break;
 		case '5': break;
 		default: printf ("Opcao invalida \n");
 		}
