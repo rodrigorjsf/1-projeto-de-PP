@@ -337,7 +337,7 @@ void CadastrarVoo(FILE * arq)
 	Horario h;
 	int aux, i, j, origemAux, destinoAux;
 	char cod[8];
-	char Locais[10][100] = {"RECIFE","SALVADOR","AO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE","ARACAJU"};
+	char Locais[10][100] = {"RECIFE","SALVADOR","SAO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE","ARACAJU"};
 	gerarCodigo(&v);
 	aux = BuscarVoo(arq, cod);
 	if (aux < 0) {
@@ -612,6 +612,7 @@ void MenuVOO (FILE *arqPass, FILE *arqCliente,FILE * arqVoo ,char op)
 				codVooAux[i] = getche();
 				if (i == 7)
 					codVooAux[8] = '\0';
+				i++;
 			}
 			aux = RecebeCOD(codVooAux);
 		}while (aux == 0);
@@ -631,6 +632,7 @@ void MenuVOO (FILE *arqPass, FILE *arqCliente,FILE * arqVoo ,char op)
 				codVooAux[i] = getche();
 				if (i == 7)
 					codVooAux[8] = '\0';
+				i++;
 			}
 			aux = RecebeCOD(codVooAux);
 		}while (aux == 0);

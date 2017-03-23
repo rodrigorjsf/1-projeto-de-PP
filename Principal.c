@@ -3,9 +3,7 @@
 #include "HeaderVoo.h"
 
 
-void ModuloCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente);
-void ModuloPassagem (FILE * arqPassagem, FILE * arqVoo, FILE * arqCliente);
-void ModuloVoo (FILE *arqPass, FILE *arqCliente, FILE * arqVoo );
+
 
 FILE * criarArquivo (char nome[]) {
 	FILE * arq;
@@ -15,6 +13,10 @@ FILE * criarArquivo (char nome[]) {
 	}
 	return arq;
 }
+
+void ModuloCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente);
+void ModuloPassagem (FILE * arqPassagem, FILE * arqVoo, FILE * arqCliente);
+void ModuloVoo (FILE *arqPass, FILE *arqCliente, FILE * arqVoo );
 
 int main () {
 	char op, nomeArqum [] = "Cliente.dat", nomeArqdois [] = "Passagem.dat", nomeArqtres [] = "Voo.dat";
@@ -113,7 +115,7 @@ void ModuloPassagem (FILE * arqPassagem, FILE * arqVoo, FILE * arqCliente){
 	} while (op != '5');
 }
 
-void ModuloVoo (FILE * arqPass, FILE * arqCliente, FILE * arqVoo ){
+void ModuloVoo (FILE *arqPass, FILE *arqCliente, FILE * arqVoo ){
 	char op;
 	do {
 		system ("cls");

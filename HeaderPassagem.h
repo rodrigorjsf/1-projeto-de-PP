@@ -15,7 +15,8 @@ typedef struct passagem {
 }TPass;
 
 
-int BuscarPassagem (FILE * arq, char cpf [], int pos);
+int BuscarPassagemCPF (FILE * arq, char cpf [], int pos);
+int BuscarPassagemCodReserva (FILE * arq, char cod []);
 int validaCodReserva(char cod[]);
 void gerarCodigoReserva (TPass * p);
 void opcoesOrigem ();
@@ -27,8 +28,9 @@ void preencherMatriz(FILE *arqVoo, char matriz[6][6], int posi);
 int confirmaCompra(FILE *arqVoo, int i, int j, int posi);
 float valorPassagem(FILE *arqVoo, int posi);
 void liberarPoltrona(char matriz[6][6], int i, int j);
+void acharCodigoVoo(FILE *arqVoo, int posi, char * cod);
 void venderPassagem(FILE *arqPass, FILE *arqCliente, FILE *arqVoo, int origem, int destino, Horario h);
-void cancelarPassagem(FILE *arqPass, FILE *arqVoo, int codReserva);
+void cancelarPassagem(FILE *arqPass, FILE *arqVoo, char codReserva[]);
 void consultarPassageirosVoo(FILE *arqPass, FILE *arqCliente, char codVoo[]);
 void MenuPassagem (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op);
 

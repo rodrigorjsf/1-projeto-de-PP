@@ -75,15 +75,18 @@ int comparaHora (char dia[], char mes[], char hora[], char min[])
     else
         return 1; */
 }
-char * gerarMaiusculo (char nome[])
+void gerarMaiusculo (char nome[], TCliente * c)
 {
-	char * maiusculo;
-	maiusculo = (char *)malloc(100 * sizeof(char));
+	char maiusculo[100];
 	int i;
-	for(i=0; nome[i]!= '\0'; i++)
-		maiusculo[i] = toupper(nome[i]);
+	for(i=0; nome[i]!= '\0'; i++){
+		if (isalpha (nome[i]) != 0)
+			maiusculo[i] = toupper(nome[i]);
+		else if (nome[i+1] != 32)
+				maiusculo[i] = nome[i];
+		}
 	maiusculo[i] = '\0';
-	return maiusculo;
+	strcpy (c->nome,maiusculo);
 }
 
 int RecebeCPF(char cpf[]){
@@ -137,18 +140,24 @@ int BuscarCliente (FILE * arq, char cpf [])
 
 int ValidaCPF (char cpf[]){
 	int icpf[12];
-	int i = 0,soma=0,digito1,result1,result2,digito2,valor;
-
+	int aux, i = 0,soma=0,digito1,result1,result2,digito2,valor;
+	aux = strlen (cpf);
 	do{
 		if (isdigit(cpf[i]) == 0)
 		{
-			printf ("CPF Invalido. Informe uma sequencia de 11 numeros sem espacos entre eles.");
+			if(i == aux && cpf[i] == '\0')
+				break;
+			else
+			{
+			printf ("\n %d", i);
+			printf ("\nCPF Invalido. \nInforme uma sequencia de 11 numeros sem espacos entre eles.");
 			system ("pause");
 			return 0;
+			}
 		}
 		else
 			i++;
-	}while (i != 12);
+	}while (i != aux+1);
 	for(i=0;i<11;i++)  //Efetua a conversao de array de char para um array de int.
 	{
 		icpf[i]=cpf[i]-48;
@@ -181,16 +190,19 @@ int ValidaCPF (char cpf[]){
 	{
 		digito2=11-result2;
 	}
-	if((digito1==icpf[9]) && (digito2==icpf[10]))   //RESULTADOS DA VALIDACAO.
+	if((digito1==icpf[9]) && (digito2==icpf[10]))
 	{
 		printf("\nCPF VALIDADO.\n");
-		return 1;                       // retorna 1 para valido
+		system ("pause");
+
+		return 1;
 	}
 	else
 	{
 		printf("Problema com os digitos. CPF invalido.\n");
+		system ("pause");
 	}
-	return 0;      // retorna 0 para cpf invalido
+	return 0;
 }
 
 int validaNome(char nome[]) {
@@ -208,7 +220,6 @@ int validaNome(char nome[]) {
 	return 1;
 }
 
-//numeros
 int validaTelefone(char telefone[]) {
 	int i;
 
@@ -223,7 +234,6 @@ int validaTelefone(char telefone[]) {
 	return 1;
 }
 
-//letras, numeros, pontos e um @
 int validaEmail(char email[]) {
 	int i, j = 0;
 
@@ -231,9 +241,9 @@ int validaEmail(char email[]) {
 		if (email[i] == '\n') {
 			return 1;
 		}
-		if (isalnum(email[i]) == 0) {//letra e numero
-			if (email[i] != '.') {//ponto
-				if (email[i] == '@') {//se for arroba j++
+		if (isalnum(email[i]) == 0) {
+			if (email[i] != '.') {
+				if (email[i] == '@') {
 					j++;
 				}
 				if (j > 1) {
@@ -259,7 +269,7 @@ int validaRemocao (FILE * arqPass, FILE * arqVoo,char cpf[])
     TPass p;
     TVoo v;
     do{
-    pos = BuscarPassagem (arqPass, cpf, posAux);
+    pos = BuscarPassagemCPF (arqPass, cpf, posAux);
     posAux = pos;
     if (pos == -1)
         return validar;
@@ -295,7 +305,7 @@ int validaRemocao (FILE * arqPass, FILE * arqVoo,char cpf[])
 
 void CadastrarNome (TCliente * c)
 {
-	char * nomeAux, nome [100];
+	char nome [100];
 	int i, aux;
 	do{
 		i = 0;
@@ -313,10 +323,10 @@ void CadastrarNome (TCliente * c)
 			}
 			i++;
 		}
-		aux = ValidaNome(nome);
+		aux = validaNome(nome);
 		if (aux == 1){
-			nomeAux = gerarMaiusculo(nome);
-			strcpy(c->nome, nomeAux);
+			gerarMaiusculo(nome, c);
+			strcpy(c->nome, nome);
 		}
 		else{
 			printf("Nome invalido. Por favor, inserir nome valido. \n");
@@ -346,7 +356,7 @@ void CadastrarTelefone (TCliente * c)
 				tel[12] = '\0';
 			i++;
 		}
-		aux = ValidaTelefone(tel);
+		aux = validaTelefone(tel);
 		if (aux == 1)
 			strcpy(c->telefone, tel);
 		else{
@@ -376,7 +386,7 @@ void CadastrarEmail (TCliente * c)
 			}
 			i++;
 		}
-		aux = ValidaEmail(email);
+		aux = validaEmail(email);
 		if (aux == 1)
 			strcpy(c->email, email);
 		else{
@@ -519,7 +529,7 @@ void MenuCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
 			i = 0;
 			system ("cls");
 			printf ("Informe o CPF do Cliente: ");
-			while(i <= 11){
+			while(i < 11){
 				auxCpf[i] = getche();
 				if (i == 2)
 					printf (".");
@@ -527,8 +537,9 @@ void MenuCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
 					printf (".");
 				if (i == 8)
 					printf ("-");
-				if (i == 11)
-					auxCpf[12] = '\0';
+				if (i == 10)
+					auxCpf[i+1] = '\0';
+				i++;
 			}
 			aux = RecebeCPF(auxCpf);
 		}while (aux == 0);
@@ -553,6 +564,7 @@ void MenuCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
 					printf ("-");
 				if (i == 11)
 					auxCpf[12] = '\0';
+				i++;
 			}
 			aux = RecebeCPF(auxCpf);
 		}while (aux == 0);
@@ -577,6 +589,7 @@ void MenuCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
 					printf ("-");
 				if (i == 11)
 					auxCpf[12] = '\0';
+				i++;
 			}
 			aux = RecebeCPF(auxCpf);
 		}while (aux == 0);
@@ -601,6 +614,7 @@ void MenuCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
 					printf ("-");
 				if (i == 11)
 					auxCpf[12] = '\0';
+				i++;
 			}
 			aux = RecebeCPF(auxCpf);
 		}while (aux == 0);
@@ -610,10 +624,6 @@ void MenuCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
 			RemoverCliente (arqPassagem,arqVoo,arqCliente, auxCpf);
 	}
 }
-
-
-
-
 
 
 
