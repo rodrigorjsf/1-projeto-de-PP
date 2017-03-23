@@ -83,8 +83,8 @@ void gerarCodigoReserva (TPass * p)
 void opcoesOrigem ()
 {
     int i;
-    char origens[10][100] = {"1- RECIFE","2 - SALVADOR","3 - SAO PAULO","4 - RIO DE JANEIRO","5 - CURITIBA","6 - PORTO ALEGRE","7 - NATAL","8 - MANAUS","9 - BELO HORIZONTE","10 - ARACAJU"};
-    char origensEstado[10][10] = {"- PE","- BA","- SP","- RJ","- PR","- RS","- RN","- AM","- MG","- SE"};
+    char origens[9][100] = {"1- RECIFE","2 - SALVADOR","3 - SAO PAULO","4 - RIO DE JANEIRO","5 - CURITIBA","6 - PORTO ALEGRE","7 - NATAL","8 - MANAUS","9 - BELO HORIZONTE"};
+    char origensEstado[9][10] = {"- PE","- BA","- SP","- RJ","- PR","- RS","- RN","- AM","- MG"};
     printf ("Opcoes de Origem: \n");
     for(i = 0; i < 10; i++)
         printf ("%s %s \n", origens[i], origensEstado[i]);
@@ -94,8 +94,8 @@ void opcoesOrigem ()
 void opcoesDestinos ()
 {
     int i;
-    char destinos[10][100] = {"1- RECIFE","2 - SALVADOR","3 - SAO PAULO","4 - RIO DE JANEIRO","5 - CURITIBA","6 - PORTO ALEGRE","7 - NATAL","8 - MANAUS","9 - BELO HORIZONTE","10 - ARACAJU"};
-    char origensEstado[10][10] = {"- PE","- BA","- SP","- RJ","- PR","- RS","- RN","- AM","- MG","- SE"};
+    char destinos[9][100] = {"1- RECIFE","2 - SALVADOR","3 - SAO PAULO","4 - RIO DE JANEIRO","5 - CURITIBA","6 - PORTO ALEGRE","7 - NATAL","8 - MANAUS","9 - BELO HORIZONTE"};
+    char origensEstado[9][10] = {"- PE","- BA","- SP","- RJ","- PR","- RS","- RN","- AM","- MG"};
     printf ("Opcoes de Destino: \n");
     for(i = 0; i < 10; i++)
         printf ("%s %s \n", destinos[i], origensEstado[i]);
@@ -105,7 +105,7 @@ void opcoesDestinos ()
 int procurarVooPassagem(FILE *arqVoo, int origem, int destino, char hora[], char min[]) {
 	TVoo v;
 	int cont = -1;
-	char Locais[10][100] = {"RECIFE","SALVADOR","AO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE","ARACAJU"};
+	char Locais[9][100] = {"RECIFE","SALVADOR","AO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE"};
 
 	fseek(arqVoo, 0, 0);
 	while (1) {
@@ -167,7 +167,7 @@ void ConsultarPassagem (FILE * arqCliente, FILE * arqPass, FILE * arqVoo,char cp
             else if (voo == -2)
                 printf ("Erro de leitura \n");
             else
-            {                
+            {
                 fseek(arqVoo, voo * sizeof (TVoo), 0);
                 status = fread (&v,sizeof (TVoo), 1, arqVoo);
                 validar = comparaHora (v.dia, v.mes, v.hora, v.min);
@@ -290,7 +290,7 @@ void acharCodigoVoo(FILE *arqVoo, int posi, char * cod) {
 
 void venderPassagem(FILE *arqPass, FILE *arqCliente, FILE *arqVoo, int origem, int destino, Horario h) {
 	TPass passagem;
-	int i, posi, num, conf = 1 ,aux;
+	int i, posi, num, conf = 1 ,aux, auxCod;
 	char auxMapa[6][6], op, auxCpf[11], cod [8];
 	char Locais[10][100] = {"RECIFE","SALVADOR","AO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE","ARACAJU"};
 	srand((unsigned)time(NULL));
@@ -391,6 +391,13 @@ void venderPassagem(FILE *arqPass, FILE *arqCliente, FILE *arqVoo, int origem, i
 		passagem.poltrona[2] = '\0';
 
 		gerarCodigoReserva(&passagem);
+		auxCod = BuscarPassagemCodReserva(arqPass, passagem.codReserva);
+		if (auxCod > -1){
+		    do{
+		        gerarCodigoReserva(&passagem);
+		        auxCod = BuscarPassagemCodReserva(arqPass, passagem.codReserva);
+            }while (auxCod > -1);
+	    }
 		printf("Seu codigo da reserva eh: %s \n", passagem.codReserva);
 		passagem.status = 1;
 
@@ -574,7 +581,7 @@ void MenuPassagem (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
 			i = 0;
 			system ("cls");
 			printf ("Informe o CPF do Cliente: ");
-			while(i <= 11){
+			while(i < 11){
 				auxCpf[i] = getche();
 				if (i == 2)
 					printf (".");
@@ -582,8 +589,8 @@ void MenuPassagem (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
 					printf (".");
 				if (i == 8)
 					printf ("-");
-				if (i == 11)
-					auxCpf[12] = '\0';
+				if (i == 10)
+					auxCpf[i+1] = '\0';
 				i++;
 				}
 				aux = RecebeCPF(auxCpf);
@@ -600,10 +607,10 @@ void MenuPassagem (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
 			i = 0;
 			system ("cls");
 			printf ("Informe o Codigo de reserva: ");
-			while(i <= 5){
+			while(i < 5){
 				codVooAux[i] = getche();
-				if (i == 5)
-					Reserva[6] = '\0';
+				if (i == 4)
+					Reserva[i+1] = '\0';
 				i++;
 			}
 		}while (i < 5);
@@ -619,10 +626,10 @@ void MenuPassagem (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
 			i = 0;
 			system ("cls");
 			printf ("Informe o Codigo do Voo: ");
-			while(i <= 7){
+			while(i < 7){
 				codVooAux[i] = getche();
-				if (i == 7)
-					codVooAux[8] = '\0';
+				if (i == 6)
+					codVooAux[i+1] = '\0';
 				i++;
 			}
 			aux = RecebeCOD(codVooAux);

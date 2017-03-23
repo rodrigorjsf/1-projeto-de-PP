@@ -275,7 +275,7 @@ int validaRemocao (FILE * arqPass, FILE * arqVoo,char cpf[])
         return validar;
     else if (pos == -2)
         printf ("Erro de leitura \n");
-    else 
+    else
     {
         fseek(arqPass, pos * sizeof (TPass), 0);
         status = fread (&p,sizeof (TPass), 1, arqPass);
@@ -288,12 +288,12 @@ int validaRemocao (FILE * arqPass, FILE * arqVoo,char cpf[])
             else if (voo == -2)
                 printf ("Erro de leitura \n");
             else
-            {                
+            {
                 fseek(arqVoo, voo * sizeof (TVoo), 0);
                 status = fread (&v,sizeof (TVoo), 1, arqVoo);
-                validar = comparaHora (v.dia, v.mes, v.hora, v.min);  
+                validar = comparaHora (v.dia, v.mes, v.hora, v.min);
                 if (validar == 1)
-                    return validar;                       
+                    return validar;
             }
         }
     }
@@ -311,11 +311,11 @@ void CadastrarNome (TCliente * c)
 		i = 0;
 		system("cls");
 		printf("Digite o nome do cliente: \n");
-		while(i < 100)
+		while(i < 99)
 		{
 			nome[i] = getche();
-			if (i == 99)
-				nome[100] = '\0';
+			if (i == 98)
+				nome[i+1] = '\0';
 			if (nome[i] == 13)
 			{
 				nome[i] = '\0';
@@ -343,7 +343,7 @@ void CadastrarTelefone (TCliente * c)
 		i = 0;
 		system("cls");
 		printf("Digite o telefone do cliente: \n");
-		while(i < 12)
+		while(i < 11)
 		{
 			if (i == 0)
 				printf ("(");
@@ -352,8 +352,8 @@ void CadastrarTelefone (TCliente * c)
 				printf (") ");
 			if (i == 6)
 				printf ("-");
-			if (i == 11)
-				tel[12] = '\0';
+			if (i == 10)
+				tel[i+1] = '\0';
 			i++;
 		}
 		aux = validaTelefone(tel);
@@ -374,11 +374,11 @@ void CadastrarEmail (TCliente * c)
 		i = 0;
 		system("cls");
 		printf("Digite o e-mail do cliente: \n");
-		while(i < 100)
+		while(i < 99)
 		{
 			email[i] = getche();
-			if (i == 99)
-				email[100] = '\0';
+			if (i == 98)
+				email[i+1] = '\0';
 			if (email[i] == 13)
 			{
 				email[i] = '\0';
@@ -554,7 +554,7 @@ void MenuCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
 			i = 0;
 			system ("cls");
 			printf ("Informe o CPF do Cliente: ");
-			while(i <= 11){
+			while(i < 11){
 				auxCpf[i] = getche();
 				if (i == 2)
 					printf (".");
@@ -562,8 +562,8 @@ void MenuCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
 					printf (".");
 				if (i == 8)
 					printf ("-");
-				if (i == 11)
-					auxCpf[12] = '\0';
+				if (i == 10)
+					auxCpf[i+1] = '\0';
 				i++;
 			}
 			aux = RecebeCPF(auxCpf);
@@ -579,7 +579,7 @@ void MenuCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
 			i = 0;
 			system ("cls");
 			printf ("Informe o CPF do Cliente: ");
-			while(i <= 11){
+			while(i < 11){
 				auxCpf[i] = getche();
 				if (i == 2)
 					printf (".");
@@ -587,8 +587,8 @@ void MenuCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
 					printf (".");
 				if (i == 8)
 					printf ("-");
-				if (i == 11)
-					auxCpf[12] = '\0';
+				if (i == 10)
+					auxCpf[i+1] = '\0';
 				i++;
 			}
 			aux = RecebeCPF(auxCpf);
@@ -604,7 +604,7 @@ void MenuCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
 			i = 0;
 			system ("cls");
 			printf ("Informe o CPF do Cliente: ");
-			while(i <= 11){
+			while(i < 11){
 				auxCpf[i] = getche();
 				if (i == 2)
 					printf (".");
@@ -612,8 +612,8 @@ void MenuCliente (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
 					printf (".");
 				if (i == 8)
 					printf ("-");
-				if (i == 11)
-					auxCpf[12] = '\0';
+				if (i == 10)
+					auxCpf[i+1] = '\0';
 				i++;
 			}
 			aux = RecebeCPF(auxCpf);
