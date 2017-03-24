@@ -19,6 +19,7 @@ void ModuloPassagem (FILE * arqPassagem, FILE * arqVoo, FILE * arqCliente);
 void ModuloVoo (FILE *arqPass, FILE *arqCliente, FILE * arqVoo );
 
 int main () {
+	system("color F0");
 	char op, nomeArqum [] = "Cliente.dat", nomeArqdois [] = "Passagem.dat", nomeArqtres [] = "Voo.dat";
 	FILE * arqCliente,*arqPassagem,*arqVoo;
 	arqCliente = criarArquivo (nomeArqum);

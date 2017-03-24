@@ -78,14 +78,20 @@ int comparaHora (char dia[], char mes[], char hora[], char min[])
 void gerarMaiusculo (char nome[], TCliente * c)
 {
 	char maiusculo[100];
-	int i;
+	int i, j = 0, cont = 0;
 	for(i=0; nome[i]!= '\0'; i++){
-		if (isalpha (nome[i]) != 0)
-			maiusculo[i] = toupper(nome[i]);
-		else if (nome[i+1] != 32)
-				maiusculo[i] = nome[i];
+		if (isalpha (nome[i]) != 0){
+			maiusculo[j] = toupper(nome[i]);
+			j++;
+			cont = 0;
 		}
-	maiusculo[i] = '\0';
+		else if (cont < 1){
+			maiusculo[j] = ' ';
+			j++;
+			cont++;
+		}
+	}
+	maiusculo[j] = '\0';
 	strcpy (c->nome,maiusculo);
 }
 
@@ -193,14 +199,14 @@ int ValidaCPF (char cpf[]){
 	if((digito1==icpf[9]) && (digito2==icpf[10]))
 	{
 		printf("\nCPF VALIDADO.\n");
-		system ("pause");
+		getch();
 
 		return 1;
 	}
 	else
 	{
 		printf("Problema com os digitos. CPF invalido.\n");
-		system ("pause");
+		getch();
 	}
 	return 0;
 }
@@ -246,7 +252,7 @@ int validaEmail(char email[]) {
 				if (email[i] == '@') {
 					j++;
 				}
-				if (j > 1) {
+				if (j != 1) {
 					return 0;
 				}
 				if (email[i] != '@') {//!arroba
@@ -326,11 +332,10 @@ void CadastrarNome (TCliente * c)
 		aux = validaNome(nome);
 		if (aux == 1){
 			gerarMaiusculo(nome, c);
-			strcpy(c->nome, nome);
 		}
 		else{
 			printf("Nome invalido. Por favor, inserir nome valido. \n");
-			system("pause");
+			getch();
 		}
 	}while (aux == 0);
 }
@@ -361,7 +366,7 @@ void CadastrarTelefone (TCliente * c)
 			strcpy(c->telefone, tel);
 		else{
 			printf("Telefone invalido. Por favor, inserir numero valido. \n");
-			system("pause");
+			getch();
 		}
 	}while (aux == 0);
 }
@@ -391,7 +396,7 @@ void CadastrarEmail (TCliente * c)
 			strcpy(c->email, email);
 		else{
 			printf("E-Mail invalido. Por favor, inserir e-mail valido. \n");
-			system("pause");
+			getch();
 		}
 	}while(aux == 0);
 }
@@ -416,7 +421,7 @@ void CadastrarCliente (FILE * arq, char cpf [])
 			printf ("Erro de gravacao \n");
 		else
 			printf ("Cliente cadastrado com sucesso \n");
-		system ("pause");
+		getch();
 	}
 }
 
@@ -483,6 +488,7 @@ void ExibirCliente (FILE * arq, char cpf []) {
 			printf ("Nome: %s \n", c.nome);
 			printf ("Fone: %s \n", c.telefone);
 			printf ("Email: %s \n", c.email);
+			getch();
 		}
 	}
 }

@@ -335,8 +335,8 @@ void CadastrarVoo(FILE * arq)
 {
 	TVoo v;
 	Horario h;
-	int aux, i, j, num1, num2;
-	char origemAux, destinoAux;
+	int aux, i, j, num1, num2, t = 0;
+	char origemAux[2], destinoAux[2];
 	char Locais[9][100] = {"RECIFE","SALVADOR","SAO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE"};
 	gerarCodigo(&v);
 	aux = BuscarVoo(arq, v.codVoo);
@@ -349,29 +349,39 @@ void CadastrarVoo(FILE * arq)
 	else {
 		do
 		{
-		     system("cls");
-		    do
-            {
-		        opcoesOrigem ();
-		        printf ("Informe a Origem: (1 a 10)");
-		        scanf("%c" ,&origemAux); fflush(stdin);
-		        if (origemAux < 49 || origemAux > 57)
-                    printf ("Opcao invalida. \n");
-            }while (origemAux < 49 || origemAux > 57);
-            system("cls");
-            do
-            {
-                opcoesDestinos ();
-                printf ("Informe o Destino: (1 a 10)");
-                scanf("%c" ,&destinoAux); fflush(stdin);
-                if (destinoAux < 49 || destinoAux > 57)
-                    printf ("Opcao invalida. \n");
-            }while (destinoAux < 49 || destinoAux > 57);
-            if (destinoAux == origemAux)
-                printf ("Destino nao pode ser o mesmo da Origem. \n");
-        }while (destinoAux == origemAux);
-        num1 = origemAux - 48;
-        num2 = destinoAux - 48;
+			do
+			{
+				system("cls");
+				opcoesOrigem();
+				printf ("Informe a Origem: ");
+				origemAux [t] = getche();
+				origemAux [t+1] = '\0';
+				//scanf("%c" ,&origem); fflush(stdin);
+				if (origemAux[t] < '1' || origemAux[t] > '9'){
+					printf ("\nOpcao invalida. \n");
+					getch();
+				}
+			}while (origemAux[t] < '1' || origemAux[t] > '9');
+			do
+			{
+				system("cls");
+				opcoesDestinos ();
+				printf ("Informe o Destino: ");
+				destinoAux [t] = getche();
+				destinoAux [t+1] = '\0';
+				//scanf("%c" ,&destino); fflush(stdin);
+				if (destinoAux[t] < '1' || destinoAux[t] > '9'){
+					printf ("\nOpcao invalida. \n");
+					getch();
+				}
+			}while (destinoAux[t] < '1' || destinoAux[t] > '9');
+			num1 = atoi(origemAux);
+			num2 = atoi(destinoAux);
+			if (num1 == num2){
+				printf ("\nDestino nao pode ser o mesmo da Origem. \n");
+				getch();
+			}
+		}while (num1 == num2);
         strcpy (v.origem, Locais[num1-1]);
 		strcpy (v.destino, Locais[num2-1]);
 		CadastrarData(&v);
@@ -600,7 +610,7 @@ void menuProcurarVoo (FILE *arqPass, FILE *arqCliente,FILE * arqVoo ,char op)
         num2 = atoi(destino);
         if (num1 == num2){
             printf ("\nDestino nao pode ser o mesmo da Origem. \n");
-            system("cls");
+            getch();
         }
     }while (num1 == num2);
 	do{
