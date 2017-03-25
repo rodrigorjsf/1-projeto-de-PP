@@ -28,6 +28,9 @@ typedef struct horario {
 
 
 void gerarMaiusculo (char nome[], TCliente * c);
+int ValidaNome (char nome[]);
+int ValidaTelefone (char telefone[]);
+int ValidaEmail (char email[]);
 int RecebeCPF(char cpf[]);
 int BuscarCliente (FILE * arq, char cpf []);
 void CadastrarNome (TCliente * c);

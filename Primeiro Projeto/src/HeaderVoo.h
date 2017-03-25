@@ -24,10 +24,12 @@ typedef struct voo {
 void gerarCodigo (TVoo * v);
 int BuscarVoo(FILE * arq, char cod[]);
 int RecebeCOD(char cod[]);
-void CadastrarData (TVoo * v);
+void CadastrarData (Data * d);
+void CadastrarHorarioNaEstrutura (TVoo * v);
 void CadastrarHorario (Horario * h);
 void CadastrarVoo (FILE * arq);
-void ProcurarVoo (FILE * arq, int origem, int destino, Horario h);
+int BuscarTodosVoos (FILE * arq, Data d , int pos);
+void ProcurarVoo (FILE * arq, int origem, int destino, Data d);
 int RecebeCodVoo(char cod[]);
 void AlterarValorPassagem (FILE * arq, char cod[]);
 void CancelarVoo (FILE * arq, char cod[]);

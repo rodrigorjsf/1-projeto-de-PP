@@ -9,7 +9,7 @@ void opcoesOrigem ()
     char origens[9][100] = {"1- RECIFE","2 - SALVADOR","3 - SAO PAULO","4 - RIO DE JANEIRO","5 - CURITIBA","6 - PORTO ALEGRE","7 - NATAL","8 - MANAUS","9 - BELO HORIZONTE"};
     char origensEstado[9][10] = {"- PE","- BA","- SP","- RJ","- PR","- RS","- RN","- AM","- MG"};
     printf ("Opcoes de Origem: \n");
-    for(i = 0; i < 10; i++)
+    for(i = 0; i < 9; i++)
         printf ("%s %s \n", origens[i], origensEstado[i]);
     printf ("\n");
 }
@@ -20,7 +20,7 @@ void opcoesDestinos ()
     char destinos[9][100] = {"1- RECIFE","2 - SALVADOR","3 - SAO PAULO","4 - RIO DE JANEIRO","5 - CURITIBA","6 - PORTO ALEGRE","7 - NATAL","8 - MANAUS","9 - BELO HORIZONTE"};
     char origensEstado[9][10] = {"- PE","- BA","- SP","- RJ","- PR","- RS","- RN","- AM","- MG"};
     printf ("Opcoes de Destino: \n");
-    for(i = 0; i < 10; i++)
+    for(i = 0; i < 9; i++)
         printf ("%s %s \n", destinos[i], origensEstado[i]);
     printf ("\n");
 }
@@ -137,8 +137,10 @@ int comparaDataLocal (Data data)
 		{
 		if (diaRecebido < diaLocal)
 			return 0;
-		else
+		else if (diaRecebido > diaLocal)
 			return 1;
+		else
+			return 2;
 		}
 	else
 		return 1;
@@ -197,9 +199,6 @@ int ValidaCPF (char cpf[]){
 	}
 	if((digito1==icpf[9]) && (digito2==icpf[10]))
 	{
-		printf("\nCPF VALIDADO.\n");
-		system("pause");
-
 		return 1;
 	}
 	else
@@ -210,62 +209,7 @@ int ValidaCPF (char cpf[]){
 	return 0;
 }
 
-int validaNome(char nome[]) {
-	int i;
 
-	for (i = 0; i < strlen(nome); i++) {
-		if (nome[i] == '\n') {
-			return 1;
-		}
-		if (isalpha(nome[i]) == 0) {
-			if (isspace(nome[i]) == 0)
-				return 0;
-		}
-	}
-	return 1;
-}
-
-int validaTelefone(char telefone[]) {
-	int i;
-
-	for (i = 0; i < strlen(telefone); i++) {
-		if (telefone[i] == '\n') {
-			return 1;
-		}
-		if (isdigit(telefone[i]) == 0) {
-			return 0;
-		}
-	}
-	return 1;
-}
-
-int validaEmail(char email[]) {
-	int i, j = 0;
-
-	for (i = 0; i < strlen(email); i++) {
-		if (email[i] == '\n') {
-			return 1;
-		}
-		if (isalnum(email[i]) == 0) {
-			if (email[i] != '.') {
-				if (email[i] == '@') {
-					j++;
-				}
-				if (j != 1) {
-					return 0;
-				}
-				if (email[i] != '@') {//!arroba
-					return 0;
-				}
-			}
-		}
-	}
-
-	if (j == 0)
-		return 0;
-
-	return 1;
-}
 
 int validaRemocao (FILE * arqPass, FILE * arqVoo,char cpf[])
 {
@@ -309,26 +253,31 @@ int validaRemocao (FILE * arqPass, FILE * arqVoo,char cpf[])
 int validaDataCorreta(Data d){
 	int diaAux,mesAux,quantDias, ano;
 	int QuantDias1[12] = { 31,28,31,30,31,30,31,31,30,31,30,31};
-        diaAux = atoi (d.dia);
-        mesAux = atoi (d.mes);
+	diaAux = atoi (d.dia);
+	mesAux = atoi (d.mes);
 	ano = bissexto(ANO);
-	if (mesAux < 1 || mesAux > 12)
+
+	if (mesAux < 1 || mesAux > 12){
 		return 0;
-	if (diaAux < 1 || diaAux > 31)
+	}
+	if (diaAux < 1 || diaAux > 31){
 		return 0;
+	}
 	if (mesAux == 2){
 		if (ano == 1)
 			quantDias = 29;
 		else
 			quantDias = QuantDias1[mesAux-1];
-		if (diaAux < 1 || diaAux > quantDias)
+		if (diaAux < 1 || diaAux > quantDias){
 			return 0;
+		}
 	}
 	else
 	{
 		quantDias = QuantDias1[mesAux-1];
-		if (diaAux < 1 || diaAux > quantDias)
+		if (diaAux < 1 || diaAux > quantDias){
 			return 0;
+		}
 	}
 	return 1;
 }
@@ -345,24 +294,29 @@ int validaHoraCorreta (Horario horario){
 }
 
 int ValidaData(Data d) {
-	int i;
+	int aux, cont = 0, i;
 
 	for (i = 0; i < 2; i++) {
-		if(d.dia[i] == '\0')
-			return 1;
-		if (isdigit(d.dia[i]) == 0)
+		if (isdigit(d.dia[i]) == 0 && cont == 0){
+			printf("\n1");
 			return 0;
+		}
+		cont++;
 	}
         i = 0;
+        cont = 0;
 	for (i = 0; i < 2; i++) {
-		if(d.mes[i] == '\0')
-			return 1;
-		if (isdigit(d.mes[i]) == 0)
+		if (isdigit(d.mes[i]) == 0 && cont ==0){
+			printf("\n2");
 			return 0;
-
+		}
+		cont++;
 	}
-	if (validaDataCorreta(d) == 0)
-            return 0;
+	aux = validaDataCorreta(d);
+	if (aux == 0){
+		printf("\n3\n");
+		return 0;
+	}
 	return 1;
 }
 
@@ -405,10 +359,7 @@ int ValidaCodVoo(char cod[]) {
 int validaCodReserva(char cod[]) {
 	int i;
 
-	for (i = 0; i < strlen(cod); i++) {
-		if (cod[i] == '\n') {
-			return 1;
-		}
+	for (i = 0; i < 5; i++) {
 		if (isdigit(cod[i]) == 0) {
 			return 0;
 		}

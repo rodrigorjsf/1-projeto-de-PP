@@ -24,6 +24,65 @@ void gerarMaiusculo (char nome[], TCliente * c)
 	strcpy (c->nome,maiusculo);
 }
 
+int validaNome(char nome[]) {
+	int i;
+
+	for (i = 0; i < strlen(nome); i++) {
+		if (nome[0] == '\n')
+			return 0;
+		else {
+			return 1;
+		}
+		if (isalpha(nome[i]) == 0) {
+			if (isspace(nome[i]) == 0)
+				return 0;
+		}
+	}
+	return 1;
+}
+
+int validaTelefone(char telefone[]) {
+	int i;
+
+	for (i = 0; i < strlen(telefone); i++) {
+		if (telefone[i] == '\n') {
+			return 1;
+		}
+		if (isdigit(telefone[i]) == 0) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
+int validaEmail(char email[]) {
+	int i, j = 0;
+
+	for (i = 0; i < strlen(email); i++) {
+		if (email[i] == '\n') {
+			return 1;
+		}
+		if (isalnum(email[i]) == 0) {
+			if (email[i] != '.') {
+				if (email[i] == '@') {
+					j++;
+				}
+				if (j != 1) {
+					return 0;
+				}
+				if (email[i] != '@') {//!arroba
+					return 0;
+				}
+			}
+		}
+	}
+
+	if (j == 0)
+		return 0;
+
+	return 1;
+}
+
 int RecebeCPF(char cpf[]){
 
 	int validar;
@@ -31,7 +90,7 @@ int RecebeCPF(char cpf[]){
 	validar = ValidaCPF (cpf);
 	if (validar == 0)
 	{
-		printf("CPF invalido, deseja tentar denovo? (S/N) \n");
+		printf("\nCPF invalido, deseja tentar denovo? (S/N) \n");
 		do{
 			op = getche();
 			if (op != 78 && op != 83 && op != 110 && op != 115)
@@ -173,8 +232,10 @@ void CadastrarCliente (FILE * arq, char cpf [])
 	int aux;
 
 	aux = BuscarCliente (arq, cpf);
-	if (aux > -1)
+	if (aux > -1){
 		printf ("\nCliente ja cadastrado. \n");
+		 system("pause");
+	}
 	else{
 		int status;
 		strcpy (cliente.cpf, cpf);
@@ -197,52 +258,65 @@ void AlterarCliente(FILE * arq, char cpf []){
     char op;
 
     pos = BuscarCliente (arq, cpf);
-    if (pos == -1)
+    if (pos == -1){
         printf ("Cliente nao cadastrado \n");
+        system ("pause");
+    }
+
     else if (pos == -2)
         printf ("Erro de leitura \n");
     else {
         fseek(arq, pos * sizeof (TCliente), 0);
         status = fread (&cliente,sizeof (TCliente), 1, arq);
     }
-    do{
-    	printf("Escolha o que deseja altrar: \n");
-    	printf ("1 - Alterar nome \n");
-    	printf ("2 - Alterar email \n");
-    	printf ("3 - Alterar telefpne \n");
-    	printf ("4 - Sair \n");
-    	printf ("informe a opcao: ");
-    	op = getchar (); fflush (stdin);
-    	switch (op) {
-    	case '1':
-    		CadastrarNome (&cliente);
-    		break;
-        case '2':
-        	CadastrarEmail (&cliente);
-        	break;
-        case '3':
-        	CadastrarTelefone (&cliente);
-        	break;
-        case '4':
-        	break;
-                default: printf("Opcao invalida. \n");
+    if (cliente.status == 0){
+    	printf ("Cliente nao cadastrado. \n");
+    	system ("pause");
+    }
+    else{
+    	do{
+    		printf("\nEscolha o que deseja altrar: \n");
+    		printf ("1 - Alterar nome \n");
+    		printf ("2 - Alterar email \n");
+    		printf ("3 - Alterar telefone \n");
+    		printf ("4 - Sair \n");
+    		printf ("informe a opcao: ");
+    		op = getchar (); fflush (stdin);
+    		switch (op) {
+    		case '1':
+    			CadastrarNome (&cliente);
+    			break;
+    		case '2':
+    			CadastrarEmail (&cliente);
+    			break;
+    		case '3':
+    			CadastrarTelefone (&cliente);
+    			break;
+        	case '4':
+        		break;
+        	default: printf("Opcao invalida. \n");
+    		}
+    	}while(op != '4');
+    	fseek(arq, -sizeof(TCliente), 1);
+    	status = fwrite (&cliente,sizeof (TCliente), 1, arq);
+    	if (status != 1)
+    		printf ("\nErro de gravacao \n");
+    	else{
+    		printf ("\nCliente alterado com sucesso \n");
+    		system ("pause");
     	}
-    }while(op != '4');
-    fseek(arq, -sizeof(TCliente), 1);
-    status = fwrite (&cliente,sizeof (TCliente), 1, arq);
-    if (status != 1)
-        printf ("\nErro de gravacao \n");
-    else
-        printf ("\nCliente alterado com sucesso \n");
+    }
 }
 
 void ExibirCliente (FILE * arq, char cpf []) {
 	TCliente c;
-	int pos, status;
+	int i=0, pos, status;
 
 	pos = BuscarCliente (arq, cpf);
-	if (pos == -1)
+	if (pos == -1){
 		printf ("\nCliente nao cadastrado \n");
+		system ("pause");
+	}
 	else if (pos == -2)
 		printf ("Erro de leitura \n");
 	else {
@@ -251,8 +325,20 @@ void ExibirCliente (FILE * arq, char cpf []) {
 		if (status != 1)
 			printf ("Erro de leitura \n");
 		else {
-			printf ("Nome: %s \n", c.nome);
-			printf ("Fone: %s \n", c.telefone);
+			printf ("\nNome: %s \n", c.nome);
+			printf ("Fone: ");
+			while(i < 11)
+			{
+				if (i == 0)
+					printf ("(");
+				printf ("%c", c.telefone[i]);
+				if (i == 1)
+					printf (") ");
+				if (i == 6)
+					printf ("-");
+				i++;
+			}
+			printf ("\n");
 			printf ("Email: %s \n", c.email);
 			getch();
 		}
@@ -264,8 +350,10 @@ void RemoverCliente (FILE * arqPass, FILE * arqVoo,FILE * arq, char cpf []) {
 	int pos, status, valida;
 
 	pos = BuscarCliente (arq, cpf);
-	if (pos == -1)
+	if (pos == -1){
 		printf ("Cliente nao cadastrado \n");
+		system ("pause");
+	}
 	else if (pos == -2)
 		printf ("Erro de leitura \n");
 	else {
@@ -275,8 +363,10 @@ void RemoverCliente (FILE * arqPass, FILE * arqVoo,FILE * arq, char cpf []) {
 			printf ("Erro de leitura \n");
 		else {
                     valida = validaRemocao (arqPass,arqVoo,cpf);
-                    if (valida == 1)
+                    if (valida == 1){
                         printf ("\nNao e possivel excluir esse cliente no momento. Ele ainda possui reseva para voos futuros. \n");
+                        system ("pause");
+                    }
                     else
                     {
                         c.status = 0;
@@ -284,8 +374,10 @@ void RemoverCliente (FILE * arqPass, FILE * arqVoo,FILE * arq, char cpf []) {
                         status = fwrite (&c,sizeof (TCliente), 1, arq);
                         if (status != 1)
                             printf ("Erro de gravacao \n");
-                        else
+                        else{
                             printf ("\nCliente removido com sucesso \n");
+                            system ("pause");
+                        }
                     }
 		}
 	}

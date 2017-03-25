@@ -9,6 +9,7 @@ int BuscarPassagemCPF (FILE * arq, char cpf [], int pos)
     TPass p;
     if (pos > -1){
         cont = pos;
+        pos++;
         fseek (arq, pos * sizeof (TPass), 0);
     }
     else
@@ -68,7 +69,7 @@ void gerarCodigoReserva (TPass * p)
 	strcpy (p->codReserva,cod);
 }
 
-int procurarVooPassagem(FILE *arqVoo, int origem, int destino, char hora[], char min[]) {
+int procurarVooPassagem(FILE *arqVoo, int origem, int destino, Data d, Horario h) {
 	TVoo v;
 	int cont = -1;
 	char Locais[9][100] = {"RECIFE","SALVADOR","AO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE"};
@@ -85,7 +86,7 @@ int procurarVooPassagem(FILE *arqVoo, int origem, int destino, char hora[], char
 		}
 		else {
 			cont++;
-			if (v.status == 1 && strcmp(v.origem, Locais[origem]) == 0 && strcmp(v.destino, Locais[destino]) == 0 && strcmp(v.hora, hora) == 0 && strcmp(v.min, min) == 0) {
+			if (v.status == 1 && strcmp(v.origem, Locais[origem-1]) == 0 && strcmp(v.destino, Locais[destino-1]) == 0 && strcmp(v.dia, d.dia) == 0 && strcmp(v.mes, d.mes) == 0 && strcmp(v.hora, h.hora) == 0 && strcmp(v.min, h.min) == 0) {
 				if (v.poltronas > 0) {
 					return cont;
 				}
@@ -108,6 +109,7 @@ void ConsultarPassagem (FILE * arqCliente, FILE * arqPass, FILE * arqVoo,char cp
     c = BuscarCliente (arqCliente,cpf);
     if (c == -1){
         printf ("Cliente nao cadastrado. \n");
+        system("pause");
         return;
     }
     else if (c == -2){
@@ -117,8 +119,10 @@ void ConsultarPassagem (FILE * arqCliente, FILE * arqPass, FILE * arqVoo,char cp
     do{
     pos = BuscarPassagemCPF (arqPass, cpf, posAux);
     posAux = pos;
-    if (pos == -1)
-        printf ("Total de %d Passagem(ens). \n", cont);
+    if (pos == -1){
+        printf ("\nTotal de %d Passagem(ens). \n", cont);
+        system("pause");
+    }
     else if (pos == -2)
         printf ("Erro de leitura \n");
     else {
@@ -128,8 +132,10 @@ void ConsultarPassagem (FILE * arqCliente, FILE * arqPass, FILE * arqVoo,char cp
             printf ("Erro de leitura \n");
         else {
             voo = BuscarVoo(arqVoo, p.codVoo);
-            if (voo == -1)
+            if (voo == -1){
                 printf ("Voo nao cadastrado. \n");
+                system("pause");
+            }
             else if (voo == -2)
                 printf ("Erro de leitura \n");
             else
@@ -137,41 +143,34 @@ void ConsultarPassagem (FILE * arqCliente, FILE * arqPass, FILE * arqVoo,char cp
                 fseek(arqVoo, voo * sizeof (TVoo), 0);
                 status = fread (&v,sizeof (TVoo), 1, arqVoo);
                 validar = comparaHora_e_Data (v.dia, v.mes, v.hora, v.min);
-                if (validar == 1){
-                    printf ("Codigo do Voo: %s \n", v.codVoo);
+                if (validar == 1 && p.status == 1){
+                    printf ("\nCodigo do Voo: %s \n", v.codVoo);
+                    printf ("Codigo de Reserva: %s \n", p.codReserva);
                     printf ("Data do Voo: %s/%s/2017 \n", v.dia,v.mes);
                     printf ("Horario: %s:%s \n", v.hora, v.min);
                     printf ("Origem: %s \n", v.origem);
                     printf ("Destino: %s \n", v.destino);
-                    printf ("Valor: %f \n\n", v.valor);
+                    printf ("Valor: %.2f \n\n", v.valor);
+
                 }
 
             }
         }
     }
     cont++;
-    }while (pos == -1);
+    }while (pos != -1);
+    system("pause");
 }
 
 void ImagemVoo(char voo[6][6]) {
-	printf("             ()              \n");
-	printf("            /  \\            \n");
-	printf("           /    \\           \n");
-	printf("          /      \\          \n");
-	printf("         /        \\         \n");
-	printf("        /          \\        \n");
-	printf("       /            \\       \n");
-	printf("      |  A  B  C  D  E  F  | \n");
-	printf("_____J|1 %c %c %c %c %c %c |J____________        \n", voo[0][0], voo[0][1], voo[0][2], voo[0][3], voo[0][4], voo[0][5]);
-	printf("     A|2 %c %c %c %c %c %c |A             \\     \n", voo[1][0], voo[1][1], voo[1][2], voo[1][3], voo[1][4], voo[1][5]);
-	printf("     N|3 %c %c %c %c %c %c |N              \\    \n", voo[2][0], voo[2][1], voo[2][2], voo[2][3], voo[2][4], voo[2][5]);
-	printf("_____E|4 %c %c %c %c %c %c |E_______________\\   \n", voo[3][0], voo[3][1], voo[3][2], voo[3][3], voo[3][4], voo[3][5]);
-	printf("     L|5 %c %c %c %c %c %c |L                    \n", voo[4][0], voo[4][1], voo[4][2], voo[4][3], voo[4][4], voo[4][5]);
-	printf("     A|6 %c %c %c %c %c %c |A                    \n", voo[5][0], voo[5][1], voo[5][2], voo[5][3], voo[5][4], voo[5][5]);
-	printf("     /                \\     \n");
-	printf("    /__________________\\    \n");
-	printf("                             \n");
-	printf("                             \n");
+	printf(" |  A B C D E F | \n");
+	printf(" J|1 %c %c %c %c %c %c |J  \n", voo[0][0], voo[0][1], voo[0][2], voo[0][3], voo[0][4], voo[0][5]);
+	printf(" A|2 %c %c %c %c %c %c |A  \n", voo[1][0], voo[1][1], voo[1][2], voo[1][3], voo[1][4], voo[1][5]);
+	printf(" N|3 %c %c %c %c %c %c |N  \n", voo[2][0], voo[2][1], voo[2][2], voo[2][3], voo[2][4], voo[2][5]);
+	printf(" E|4 %c %c %c %c %c %c |E  \n", voo[3][0], voo[3][1], voo[3][2], voo[3][3], voo[3][4], voo[3][5]);
+	printf(" L|5 %c %c %c %c %c %c |L  \n", voo[4][0], voo[4][1], voo[4][2], voo[4][3], voo[4][4], voo[4][5]);
+	printf(" A|6 %c %c %c %c %c %c |A  \n", voo[5][0], voo[5][1], voo[5][2], voo[5][3], voo[5][4], voo[5][5]);
+
 }
 
 void preencherMatriz(FILE *arqVoo, char matriz[6][6], int posi) {
@@ -254,24 +253,30 @@ void acharCodigoVoo(FILE *arqVoo, int posi, char * cod) {
 	}
 }
 
-void venderPassagem(FILE *arqPass, FILE *arqCliente, FILE *arqVoo, int origem, int destino, Horario h) {
+void venderPassagem(FILE *arqPass, FILE *arqCliente, FILE *arqVoo, int origem, int destino, Data d) {
 	TPass passagem;
+	TVoo v;
+	Horario h;
 	int i, posi, num, conf = 1 ,aux, auxCod;
-	char auxMapa[6][6], op, auxCpf[11], cod [8];
-	char Locais[10][100] = {"RECIFE","SALVADOR","AO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE","ARACAJU"};
+	char auxMapa[6][6], op, auxCpf[12], cod [8];
+	char Locais[10][100] = {"RECIFE","SALVADOR","SAO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE","ARACAJU"};
 	srand((unsigned)time(NULL));
-
-	posi = procurarVooPassagem(arqVoo, origem, destino, h.hora, h.min);
+	ProcurarVoo(arqVoo, origem, destino, d);
+	CadastrarHorario (&h);
+	posi = procurarVooPassagem(arqVoo, origem, destino, d, h);
 	if (posi < 0) {
-		printf("Voo nao encontrado ou nao existem poltronas disponiveis \n");
+		printf("\nVoo nao encontrado ou nao existem poltronas disponiveis \n");
+		system("pause");
 	}
 	else {
+		fseek(arqVoo, posi * sizeof (TVoo), 0);
+		fread (&v,sizeof (TVoo), 1, arqVoo);
 		fseek(arqPass, 0, 2);
 		do{
 			i = 0;
 			system ("cls");
 			printf ("Informe o CPF do Passageiro: ");
-			while(i <= 11){
+			while(i < 11){
 				auxCpf[i] = getche();
 				if (i == 2)
 					printf (".");
@@ -279,8 +284,9 @@ void venderPassagem(FILE *arqPass, FILE *arqCliente, FILE *arqVoo, int origem, i
 					printf (".");
 				if (i == 8)
 					printf ("-");
-				if (i == 11)
-					auxCpf[12] = '\0';
+				if (i == 10)
+					auxCpf[i+1] = '\0';
+				i++;
 			}
 			aux = RecebeCPF(auxCpf);
 		}while (aux == 0);
@@ -288,8 +294,9 @@ void venderPassagem(FILE *arqPass, FILE *arqCliente, FILE *arqVoo, int origem, i
 			return;
 		else
 		{
-			if (BuscarCliente(arqCliente, passagem.cpf) < 0) {
+			if (BuscarCliente(arqCliente, auxCpf) < 0) {
 				printf("Cliente nao cadastrado \n");
+				system("pause");
 				return;
 			}
 			else
@@ -299,7 +306,7 @@ void venderPassagem(FILE *arqPass, FILE *arqCliente, FILE *arqVoo, int origem, i
 		strcpy(passagem.codVoo, cod);
 
 		preencherMatriz(arqVoo, auxMapa, posi); ///////////////
-		printf("Lugares disponiveis \n");
+		printf("\nLugares disponiveis \n");
 		ImagemVoo(auxMapa);
 
 		do {
@@ -351,11 +358,12 @@ void venderPassagem(FILE *arqPass, FILE *arqCliente, FILE *arqVoo, int origem, i
 			if (conf == 1 && op != 's')
 				break;
 		} while (op != 's');
+		if (op == 's')
+			return;
 		op = toupper(op);
 		passagem.poltrona[0] = op;
 		passagem.poltrona[1] = num + 48;
 		passagem.poltrona[2] = '\0';
-
 		gerarCodigoReserva(&passagem);
 		auxCod = BuscarPassagemCodReserva(arqPass, passagem.codReserva);
 		if (auxCod > -1){
@@ -370,12 +378,13 @@ void venderPassagem(FILE *arqPass, FILE *arqCliente, FILE *arqVoo, int origem, i
 		printf("----------BOLETO---------- \n");
 		printf("-------------------------- \n");
 		printf("--Informacoes da reserva: \n");
-		printf("--Origem: %s", Locais[origem]);
-		printf("--Destino: %s", Locais[destino]);
-		printf("--Data do voo: %s:%s \n", h.hora, h.min);
-		printf("--Acento: %c %d \n", op, num);
+		printf("--Origem: %s \n", Locais[origem-1]);
+		printf("--Destino: %s \n", Locais[destino-1]);
+		printf("--Data do voo: %s/%s/2017 \n", d.dia, d.mes);
+		printf("--Horario de partida do voo: %s:%s \n", v.hora, v.min);
+		printf("--Acento: %c%d \n", op, num);
 		printf("--Codigo da reserva: %s \n", passagem.codReserva);
-		printf("--Valor: %f \n", valorPassagem(arqVoo, posi));
+		printf("--Valor: %.2f \n", valorPassagem(arqVoo, posi));
 		printf("-------------------------- \n");
 		printf("-------------------------- \n");
 
@@ -384,6 +393,7 @@ void venderPassagem(FILE *arqPass, FILE *arqCliente, FILE *arqVoo, int origem, i
 		}
 		else {
 			printf("Passagem vendida com sucesso \n");
+			system("pause");
 		}
 
 	}
@@ -395,7 +405,7 @@ void cancelarPassagem(FILE *arqPass, FILE *arqVoo, char codReserva[]) {
 	TPass passagem;
 	TVoo voo;
 	Data d;
-	char op, num[2];
+	char op, num;
 	int pos1, pos2, i, diaAtual, diaPass, subDia;
 	time_t tp;
 	struct tm *local;
@@ -407,8 +417,10 @@ void cancelarPassagem(FILE *arqPass, FILE *arqVoo, char codReserva[]) {
 
 	fseek(arqPass, 0, 0);
 	pos1 = BuscarPassagemCodReserva (arqPass, codReserva);
-	if (pos1 == -1)
-		printf ("Passagem nao cadastrada \n");
+	if (pos1 == -1){
+		printf ("\nPassagem nao cadastrada \n");
+		system("pause");
+	}
 	else if (pos1 == -2)
 		printf ("Erro de leitura \n");
 	else {
@@ -417,8 +429,10 @@ void cancelarPassagem(FILE *arqPass, FILE *arqVoo, char codReserva[]) {
 		if(passagem.status == 1 && strcmp(passagem.codReserva,codReserva) == 0) {
 			fseek(arqVoo, 0, 0);
 			pos2 = BuscarVoo (arqVoo, passagem.codVoo);
-				if (pos2 == -1)
-					printf ("Voo nao cadastrado \n");
+				if (pos2 == -1){
+					printf ("\nVoo nao cadastrado \n");
+					system("pause");
+				}
 				else if (pos2 == -2)
 					printf ("Erro de leitura \n");
 				else {
@@ -427,19 +441,32 @@ void cancelarPassagem(FILE *arqPass, FILE *arqVoo, char codReserva[]) {
 					diaPass = atoi(voo.dia);
 					subDia = diaAtual/diaPass;
 					if (subDia < 2){
-						printf("Cancelamento negado. Cancelamento so pode ser feito com ate dois dias de antecedencia. \n");
+						printf("\nCancelamento negado. Cancelamento so pode ser feito com ate dois dias de antecedencia. \n");
+						system("pause");
 						return;
 					}
 					else{
-						printf("-----Documento de Credito----- \n");
+						printf("\n-----Documento de Credito----- \n");
 						printf("Informacoes do cancelamento: \n");
-						printf("Cpf: %s ", passagem.cpf);
-						printf("Cod Voo: %s \n", passagem.codVoo);
+						printf("Cpf: ");
+						i = 0;
+						while(i < 11){
+							printf ("%c",passagem.cpf[i] );
+							if (i == 2)
+								printf (".");
+							if (i == 5)
+								printf (".");
+							if (i == 8)
+								printf ("-");
+							i++;
+						}
+						printf("\n");
+						printf("Codigo do Voo: %s \n", passagem.codVoo);
 						if(voo.status == 1 && strcmp(voo.codVoo, passagem.codVoo) == 0) {
 							op = passagem.poltrona[0];
-							num[0] = passagem.poltrona[1];
+							num = passagem.poltrona[1];
 							op = tolower(op);
-							i = atoi(num);
+							i = num-48;
 							if(op == 'a') {
 								liberarPoltrona(voo.mapaPoltronas, i - 1, 0);
 							}
@@ -473,6 +500,7 @@ void cancelarPassagem(FILE *arqPass, FILE *arqVoo, char codReserva[]) {
 							}
 							else {
 								printf("Voo cancelado com sucesso \n");
+								system("pause");
 							}
 
 							fseek(arqVoo, -sizeof(TVoo), 1);
@@ -481,6 +509,7 @@ void cancelarPassagem(FILE *arqPass, FILE *arqVoo, char codReserva[]) {
 							}
 							else {
 								printf("Poltrona liberada com sucesso \n");
+								system("pause");
 							}
 							return;
 						}
@@ -494,6 +523,7 @@ void cancelarPassagem(FILE *arqPass, FILE *arqVoo, char codReserva[]) {
 void consultarPassageirosVoo(FILE *arqPass, FILE *arqCliente, char codVoo[]) {
 	TPass passagem;
 	TCliente cliente;
+	int i = 0;
 
 	fseek(arqPass, 0, 0);
 	while(1) {
@@ -522,11 +552,24 @@ void consultarPassageirosVoo(FILE *arqPass, FILE *arqCliente, char codVoo[]) {
 				}
 				else {
 					if(cliente.status == 1 && strcmp(cliente.cpf, passagem.cpf) == 0) {
-						printf("--------------- \n");
-						printf("Cpf: %s", cliente.cpf);
-						printf("Nome: %s", cliente.nome);
+						printf("\n--------------- \n");
+						printf("Cpf: ");
+						i = 0;
+						while(i < 11){
+							printf ("%c",passagem.cpf[i] );
+							if (i == 2)
+								printf (".");
+							if (i == 5)
+								printf (".");
+							if (i == 8)
+								printf ("-");
+							i++;
+						}
+						printf("\n");
+						printf("Nome: %s \n", cliente.nome);
 						printf("Poltrona: %s \n", passagem.poltrona);
 						printf("--------------- \n");
+						system("pause");
 					}
 				}
 
@@ -574,14 +617,16 @@ void MenuPassagem (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
 			system ("cls");
 			printf ("Informe o Codigo de reserva: ");
 			while(i < 5){
-				codVooAux[i] = getche();
+				Reserva[i] = getche();
 				if (i == 4)
 					Reserva[i+1] = '\0';
 				i++;
 			}
 		}while (i < 5);
-		if (validaCodReserva(Reserva) == 0)
-			printf ("Codigo invalido. \n");
+		if (validaCodReserva(Reserva) == 0){
+			printf ("\nCodigo invalido. \n");
+			system("pause");
+		}
 		else
 			cancelarPassagem(arqPassagem ,arqVoo, Reserva);
 	}
@@ -594,6 +639,8 @@ void MenuPassagem (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
 			printf ("Informe o Codigo do Voo: ");
 			while(i < 7){
 				codVooAux[i] = getche();
+				if (isalpha(codVooAux[i]) != 0)
+					codVooAux[i] = toupper(codVooAux[i]);
 				if (i == 6)
 					codVooAux[i+1] = '\0';
 				i++;
