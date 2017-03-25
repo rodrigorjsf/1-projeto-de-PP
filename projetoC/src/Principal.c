@@ -109,6 +109,7 @@ void ModuloPassagem (FILE * arqPassagem, FILE * arqVoo, FILE * arqCliente){
 			MenuPassagem (arqPassagem,arqVoo,arqCliente,op);
 			break;
 		case '5':
+			
 			break;
 		default: printf ("Opcao invalida \n");
 		}
@@ -140,7 +141,9 @@ void ModuloVoo (FILE *arqPass, FILE *arqCliente, FILE * arqVoo ){
 		case '4':
 			MenuVOO (arqPass,arqCliente,arqVoo ,op);
 			break;
-		case '5': break;
+		case '5':
+			ManutencaoArquivo(arqVoo);
+			break;
 		default: printf ("Opcao invalida \n");
 		}
 	} while (op != '5');
@@ -165,5 +168,22 @@ int buscar (FILE * arq, char nomeAux[]) {
 				return cont;
 		}
 	}
+}
+
+void ManutencaoArquivo(FILE *arqVoo){
+    FILE vooTemp;
+    Tvoo vooAtual;
+    VooTemp = criarArquivo(Vootemp);
+    
+    fseek(arqVoo, 0, 0);
+    while(!feof(arqVoo)){
+        fread (&vooAtual,sizeof (TVoo), 1, arqVoo);
+        if(vooAtual.status == 1){
+            fwrite(&vooAtual,sizeof (TVoo), 1, vooTemp);
+            
+        }
+    }
+    remove(arqVoo);
+    rename(vooTemp, arqVoo);
 }
 
