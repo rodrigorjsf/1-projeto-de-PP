@@ -357,9 +357,10 @@ void CadastrarVoo(FILE * arq)
 
 }
 
-int BuscarTodosVoos (FILE * arq, Data d , int pos)
+int BuscarTodosVoos (FILE * arq, int origem, int destino, Data d , int pos)
 {
     int cont = -1, status;
+    char Locais[9][50] = {"RECIFE","SALVADOR","SAO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE"};
     TVoo v;
     if (pos > -1){
     	cont = pos;
@@ -382,7 +383,7 @@ int BuscarTodosVoos (FILE * arq, Data d , int pos)
         else
         {
             cont++;
-            if (v.status == 1 && strcmp (v.mes, d.mes) == 0 && strcmp (v.dia, d.dia) == 0)
+            if (v.status == 1 && strcmp (v.mes, d.mes) == 0 && strcmp (v.dia, d.dia) == 0 && strcmp(v.destino,Locais[destino-1]) == 0 && strcmp(v.origem,Locais[origem-1]) == 0)
             	return cont;
         }
     }
@@ -397,7 +398,7 @@ void ProcurarVoo (FILE * arq, int origem, int destino, Data d)
     printf("\n%s para %s\n", Locais[origem-1], Locais[destino-1]);
     do
     {
-    	pos = BuscarTodosVoos (arq, d,posAux);
+    	pos = BuscarTodosVoos (arq,origem, destino, d,posAux);
     	posAux = pos;
     	if (pos == -1)
     		printf ("\nExistem %d voo(s) com essas caracteristicas.\n", cont);
@@ -407,7 +408,7 @@ void ProcurarVoo (FILE * arq, int origem, int destino, Data d)
     	{
     		fseek(arq, pos * sizeof (TVoo), 0);
     		fread (&voo, sizeof (TVoo), 1, arq);
-    		if(strcmp(voo.destino,Locais[destino-1]) == 0 && strcmp(voo.origem,Locais[origem-1]) == 0  && strcmp(voo.dia,d.dia) == 0  && strcmp(voo.mes,d.mes) == 0 && voo.poltronas != 0)
+    		if(voo.poltronas != 0)
     		{
     			printf("\nCodigo do voo: %s\n", voo.codVoo);
     			printf("Horario do voo: %s:%s\n", voo.hora, voo.min);
@@ -454,68 +455,31 @@ int RecebeCodVoo(char cod[]){
 void AlterarValorPassagem (FILE * arq, char cod[])
 {
 	TVoo v;
-	int aux, i, status;
-    int validar,sair = 0;
-    char cpf[12],op;
-    do
+	int pos, status;
+    pos = BuscarVoo(arq, cod);
+    if (pos < 0)
+    	printf("\nCodigo nao registrado. \n");
+    else
     {
-    	do
-        {
-    		i = 0;
-    		system ("cls");
-    		printf ("Informe o Codigo do Voo: ");
-    		while(i <= 7){
-    			cpf[i] = getche();
-    			if (i == 7)
-    				cpf[8] = '\0';
-    		}
-    	}while (strlen(cpf) != 7);
-    	i = 0;                          ////////
-    	validar = ValidaCodVoo (cod);
-    	if (validar == 0)
+    	fseek(arq, pos * sizeof (TVoo), 0);
+    	status = fread (&v,sizeof (TVoo), 1, arq);
+    	if (status != 1)
+    		printf ("Erro de leitura \n");
+    	else
     	{
-    		printf("Codigo invalido, deseja tentar denovo? (S/N) \n");
-    		do
-                {
-    			op = getche();
-    			if (op != 78 && op != 83 && op != 110 && op != 115)
-    			{
-    				printf("Opcao invalida. Deseja tentar denovo? (S/N) \n");
-    			}
-    			else if (op == 78 || op == 110)
-                        {
-    				sair = 1;
-    				break;
-    			}
-    			else
-    				break;
-    		}while(1);
+    		printf("\nDigite o novo valor da passagem: ");
+    		scanf("%f", &v.valor);
+    		fseek(arq, -sizeof(TVoo), 1);
+    		status = fwrite (&v,sizeof (TVoo), 1, arq);
+    		if (status != 1)
+    			printf ("Erro de gravacao \n");
+    		else
+    			printf ("\nValor da passagem alterada com sucesso. \n");
     	}
-    }while (validar == 0 || sair != 1);
-    if (sair == 1)
-    	return;
-	aux = BuscarVoo(arq, cod);
-	if (aux < 0)
-		printf("Codigo nao registrado. \n");
-	else
-        {
-		fseek(arq, aux * sizeof (TVoo), 0);
-		status = fread (&v,sizeof (TVoo), 1, arq);
-		if (status != 1)
-			printf ("Erro de leitura \n");
-		else
-                {
-			printf("Digite o novo valor da passagem: ");
-			scanf("%f", &v.valor);
-		}
-	}
-	fseek(arq, -sizeof(TVoo), 1);
-	status = fwrite (&v,sizeof (TVoo), 1, arq);
-	if (status != 1)
-		printf ("Erro de gravacao \n");
-	else
-		printf ("Cliente alterado com sucesso \n");
+    }
+    system("pause");
 }
+
 
 
 
@@ -524,32 +488,31 @@ void CancelarVoo (FILE * arq, char cod[]){
     int status, aux;
     aux = BuscarVoo(arq, cod);
     if (aux < 0){
-        printf("Codigo nao registrado. \n");
-        system("pause");
+        printf("\nCodigo nao registrado. \n");
     }
     else {
         fseek(arq, aux * sizeof (TVoo), 0);
         status = fread (&voo,sizeof (TVoo), 1, arq);
         if (status != 1)
-            printf ("Erro de leitura \n");
+            printf ("\nErro de leitura \n");
         else {
         	if (voo.poltronas == 36) {
         		voo.status = 0;
         		fseek(arq, -sizeof(TVoo), 1);
         		if (fwrite(&voo, sizeof(TVoo), 1, arq) != 1) {
-        			printf("Erro ao gravar \n");
+        			printf("\nErro ao gravar \n");
         		}
         		else {
-        			printf("Voo removido \n");
+        			printf("\nVoo removido \n");
         		}
         	}
         	else {
-        		printf("\nVoo nao pode ser removido, existem poltronas ocupadas");
-        		system("pause");
+        		printf("\nVoo nao pode ser removido, existem poltronas ocupadas. \n");
+
         	}
         }
     }
-
+    system("pause");
 }
 
 void menuProcurarVoo (FILE *arqPass, FILE *arqCliente,FILE * arqVoo ,char op)

@@ -57,6 +57,37 @@ int BuscarPassagemCodReserva (FILE * arq, char cod [])
 		}
 }
 
+int BuscarPassagemCodVoo (FILE * arq, char cod [], int pos)
+{
+	int cont = -1, status;
+	TPass p;
+	if (pos > -1){
+		cont = pos;
+		pos++;
+		fseek (arq, pos * sizeof (TPass), 0);
+	}
+	else{
+		fseek (arq, 0, 0);
+	}
+	while (1)
+	{
+		status = fread (&p, sizeof (TPass), 1, arq);
+		if (status != 1)
+		{
+			if (!feof(arq))
+				return -2; // erro de leitura
+			else
+				return -1; // nao achou
+			}
+		else
+		{
+			cont++;
+			if (p.status == 1 && strcmp (p.codVoo, cod) == 0)
+				return cont;
+		}
+	}
+}
+
 void gerarCodigoReserva (TPass * p)
 {
 	int i;
@@ -69,7 +100,7 @@ void gerarCodigoReserva (TPass * p)
 	strcpy (p->codReserva,cod);
 }
 
-int procurarVooPassagem(FILE *arqVoo, int origem, int destino, Data d, Horario h) {
+int procurarVooPassagem(FILE *arqVoo, int origem, int destino, Data d, char cod[]) {
 	TVoo v;
 	int cont = -1;
 	char Locais[9][100] = {"RECIFE","SALVADOR","AO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE"};
@@ -86,7 +117,7 @@ int procurarVooPassagem(FILE *arqVoo, int origem, int destino, Data d, Horario h
 		}
 		else {
 			cont++;
-			if (v.status == 1 && strcmp(v.origem, Locais[origem-1]) == 0 && strcmp(v.destino, Locais[destino-1]) == 0 && strcmp(v.dia, d.dia) == 0 && strcmp(v.mes, d.mes) == 0 && strcmp(v.hora, h.hora) == 0 && strcmp(v.min, h.min) == 0) {
+			if (v.status == 1 && strcmp(v.origem, Locais[origem-1]) == 0 && strcmp(v.destino, Locais[destino-1]) == 0 && strcmp(v.dia, d.dia) == 0 && strcmp(v.mes, d.mes) == 0 && strcmp(v.codVoo, cod) == 0) {
 				if (v.poltronas > 0) {
 					return cont;
 				}
@@ -108,7 +139,7 @@ void ConsultarPassagem (FILE * arqCliente, FILE * arqPass, FILE * arqVoo,char cp
     TVoo v;
     c = BuscarCliente (arqCliente,cpf);
     if (c == -1){
-        printf ("Cliente nao cadastrado. \n");
+        printf ("\nCliente nao cadastrado. \n");
         system("pause");
         return;
     }
@@ -133,7 +164,7 @@ void ConsultarPassagem (FILE * arqCliente, FILE * arqPass, FILE * arqVoo,char cp
         else {
             voo = BuscarVoo(arqVoo, p.codVoo);
             if (voo == -1){
-                printf ("Voo nao cadastrado. \n");
+                printf ("\nVoo nao cadastrado. \n");
                 system("pause");
             }
             else if (voo == -2)
@@ -143,7 +174,7 @@ void ConsultarPassagem (FILE * arqCliente, FILE * arqPass, FILE * arqVoo,char cp
                 fseek(arqVoo, voo * sizeof (TVoo), 0);
                 status = fread (&v,sizeof (TVoo), 1, arqVoo);
                 validar = comparaHora_e_Data (v.dia, v.mes, v.hora, v.min);
-                if (validar == 1 && p.status == 1){
+                if (validar == 1){
                     printf ("\nCodigo do Voo: %s \n", v.codVoo);
                     printf ("Codigo de Reserva: %s \n", p.codReserva);
                     printf ("Data do Voo: %s/%s/2017 \n", v.dia,v.mes);
@@ -159,7 +190,6 @@ void ConsultarPassagem (FILE * arqCliente, FILE * arqPass, FILE * arqVoo,char cp
     }
     cont++;
     }while (pos != -1);
-    system("pause");
 }
 
 void ImagemVoo(char voo[6][6]) {
@@ -256,17 +286,37 @@ void acharCodigoVoo(FILE *arqVoo, int posi, char * cod) {
 void venderPassagem(FILE *arqPass, FILE *arqCliente, FILE *arqVoo, int origem, int destino, Data d) {
 	TPass passagem;
 	TVoo v;
-	Horario h;
-	int i, posi, num, conf = 1 ,aux, auxCod;
-	char auxMapa[6][6], op, auxCpf[12], cod [8];
-	char Locais[10][100] = {"RECIFE","SALVADOR","SAO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE","ARACAJU"};
-	srand((unsigned)time(NULL));
+	int i, pos = -1,posi, num, conf = 1 ,aux, auxCod;
+	char auxMapa[6][6], op, auxCpf[12],codVoo [8], cod [8];
+	char Locais[9][50] = {"RECIFE","SALVADOR","SAO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE"};
+	pos = BuscarTodosVoos (arqVoo,origem, destino, d,pos);
+	if ( pos == -1){
+		printf("\nNenhum voo encontrado.\n");
+	}
+	else{
 	ProcurarVoo(arqVoo, origem, destino, d);
-	CadastrarHorario (&h);
-	posi = procurarVooPassagem(arqVoo, origem, destino, d, h);
+	do
+	{
+		i = 0;
+		printf ("Informe o Codigo do Voo que deseja comprar passagem: ");
+		while(i < 7){
+			codVoo[i] = getche();
+			if (isalpha(codVoo[i]) != 0)
+				codVoo[i] = toupper(codVoo[i]);
+			if (i == 6)
+				codVoo[i+1] = '\0';
+			i++;
+		}
+		aux = RecebeCOD(codVoo);
+	}while (aux == 0);
+	if (aux == 2){
+		printf ("\nCodigo Invalido.\n");
+		system("pause");
+		return;
+	}
+	posi = procurarVooPassagem(arqVoo, origem, destino, d, codVoo);
 	if (posi < 0) {
 		printf("\nVoo nao encontrado ou nao existem poltronas disponiveis \n");
-		system("pause");
 	}
 	else {
 		fseek(arqVoo, posi * sizeof (TVoo), 0);
@@ -296,7 +346,6 @@ void venderPassagem(FILE *arqPass, FILE *arqCliente, FILE *arqVoo, int origem, i
 		{
 			if (BuscarCliente(arqCliente, auxCpf) < 0) {
 				printf("Cliente nao cadastrado \n");
-				system("pause");
 				return;
 			}
 			else
@@ -387,16 +436,17 @@ void venderPassagem(FILE *arqPass, FILE *arqCliente, FILE *arqVoo, int origem, i
 		printf("--Valor: %.2f \n", valorPassagem(arqVoo, posi));
 		printf("-------------------------- \n");
 		printf("-------------------------- \n");
-
+		fseek(arqPass,0,2);
 		if (fwrite(&passagem, sizeof(TPass), 1, arqPass) != 1) {
 			printf("Erro ao gravar \n");
 		}
 		else {
 			printf("Passagem vendida com sucesso \n");
-			system("pause");
 		}
 
 	}
+	}
+	system("pause");
 }
 
 
@@ -520,64 +570,68 @@ void cancelarPassagem(FILE *arqPass, FILE *arqVoo, char codReserva[]) {
 	}
 }
 
-void consultarPassageirosVoo(FILE *arqPass, FILE *arqCliente, char codVoo[]) {
+void consultarPassageirosVoo(FILE *arqPass, FILE *arqCliente, char codVoo[])
+{
 	TPass passagem;
 	TCliente cliente;
-	int i = 0;
-
-	fseek(arqPass, 0, 0);
-	while(1) {
-		if(fread(&passagem, sizeof(TPass), 1, arqPass) != 1) {
-			if(!feof(arqPass)) {
-				printf("Erro ao ler \n");
-				return;
-			}
-			else {
-				printf("Fim \n");
-				return;
-			}
+	int pos1,pos2, posAux = -1, cont = 0, i = 0;
+	do
+	{
+		pos1 = BuscarPassagemCodVoo(arqPass, codVoo, posAux);
+		posAux = pos1;
+		if (pos1 == -1){
+			if (cont == 0)
+				printf("\nNenhuma passagem para esse voo foi comprada. \n");
+			else
+				printf("\n%d passageiro(s) nesse voo. \n", cont);
 		}
-		else {
-			if(passagem.status == 1 && strcmp(passagem.codVoo, codVoo) == 0) {
-				fseek(arqCliente, 0, 0);
-				if(fread(&cliente, sizeof(TCliente), 1, arqCliente) != 1) {
-					if(!feof(arqCliente)) {
-						printf("Erro ao ler \n");
-						return;
-					}
-					else {
-						printf("Nao achou \n");
-						return;
-					}
-				}
-				else {
-					if(cliente.status == 1 && strcmp(cliente.cpf, passagem.cpf) == 0) {
-						printf("\n--------------- \n");
-						printf("Cpf: ");
-						i = 0;
-						while(i < 11){
-							printf ("%c",passagem.cpf[i] );
-							if (i == 2)
-								printf (".");
-							if (i == 5)
-								printf (".");
-							if (i == 8)
-								printf ("-");
-							i++;
+		else if(pos1 == -2)
+			printf("\nErro ao ler \n");
+		else
+		{
+			fseek(arqPass, pos1 * sizeof (TPass), 0);
+			fread (&passagem, sizeof(TPass), 1, arqPass);
+			if(passagem.status == 1 && strcmp(passagem.codVoo, codVoo) == 0)
+			{
+				pos2 = BuscarCliente (arqCliente, passagem.cpf);
+				if (pos2 == -1)
+					printf("\nNao achou.\n");
+				else if (pos2 == -2)
+					printf("\nErro ao ler \n");
+				else
+				{
+					fseek(arqCliente, pos2 * sizeof (TCliente), 0);
+					fread (&cliente, sizeof(TCliente), 1, arqCliente);
+						if(cliente.status == 1 && strcmp(cliente.cpf, passagem.cpf) == 0)
+						{
+							printf("\n--------------- \n");
+							printf("Cpf: ");
+							i = 0;
+							while(i < 11)
+							{
+								printf ("%c",passagem.cpf[i] );
+								if (i == 2)
+									printf (".");
+								if (i == 5)
+									printf (".");
+								if (i == 8)
+									printf ("-");
+								i++;
+							}
+							printf("\n");
+							printf("Nome: %s \n", cliente.nome);
+							printf("Poltrona: %s \n", passagem.poltrona);
+							printf("--------------- \n");
+							cont++;
 						}
-						printf("\n");
-						printf("Nome: %s \n", cliente.nome);
-						printf("Poltrona: %s \n", passagem.poltrona);
-						printf("--------------- \n");
-						system("pause");
-					}
 				}
-
 			}
 		}
-	}
-
+	}while(pos1 != -1);
+	system("pause");
 }
+
+
 void MenuPassagem (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
 {
 	char auxCpf[12], codVooAux[8], Reserva[6];
@@ -649,6 +703,11 @@ void MenuPassagem (FILE * arqPassagem, FILE * arqVoo,FILE * arqCliente, char op)
 		}while (aux == 0);
 		if (aux == 2)
 			return;
+		else if(BuscarVoo(arqVoo, codVooAux) == -1){
+			printf ("\nCodigo de voo nao cadastrado. \n");
+			system("pause");
+			return;
+		}
 		else
 			consultarPassageirosVoo (arqPassagem, arqCliente, codVooAux);
 	}

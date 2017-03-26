@@ -237,12 +237,14 @@ void CadastrarCliente (FILE * arq, char cpf [])
 		 system("pause");
 	}
 	else{
+
 		int status;
 		strcpy (cliente.cpf, cpf);
 		cliente.status = 1;
 		CadastrarNome (&cliente);
 		CadastrarTelefone (&cliente);
 		CadastrarEmail (&cliente);
+		fseek (arq, 0, 2);
 		status = fwrite(&cliente,sizeof(TCliente),1,arq);
 		if (status != 1)
 			printf ("\nErro de gravacao \n");
@@ -259,7 +261,7 @@ void AlterarCliente(FILE * arq, char cpf []){
 
     pos = BuscarCliente (arq, cpf);
     if (pos == -1){
-        printf ("Cliente nao cadastrado \n");
+        printf ("\nCliente nao cadastrado \n");
         system ("pause");
     }
 
@@ -270,7 +272,7 @@ void AlterarCliente(FILE * arq, char cpf []){
         status = fread (&cliente,sizeof (TCliente), 1, arq);
     }
     if (cliente.status == 0){
-    	printf ("Cliente nao cadastrado. \n");
+    	printf ("\nCliente nao cadastrado. \n");
     	system ("pause");
     }
     else{

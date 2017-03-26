@@ -232,7 +232,7 @@ void manutencao(FILE *arqCliente, FILE *arqVoo)
     		}
     		else {
     			if (v.status == 1) {
-    				status = fwrite (&v, sizeof (TVoo), 1, clienteTemp);
+    				status = fwrite (&v, sizeof (TVoo), 1, vooTemp);
     				if (status != 1) {
     					printf ("Erro ao executar o processo de manutenção do arquivo \n");
     					fclose (arqVoo);

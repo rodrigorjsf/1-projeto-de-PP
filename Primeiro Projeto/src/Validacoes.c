@@ -203,7 +203,7 @@ int ValidaCPF (char cpf[]){
 	}
 	else
 	{
-		printf("Problema com os digitos. CPF invalido.\n");
+		printf("\nProblema com os digitos. CPF invalido.\n");
 		system("pause");
 	}
 	return 0;

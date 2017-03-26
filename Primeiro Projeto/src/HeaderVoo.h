@@ -28,7 +28,7 @@ void CadastrarData (Data * d);
 void CadastrarHorarioNaEstrutura (TVoo * v);
 void CadastrarHorario (Horario * h);
 void CadastrarVoo (FILE * arq);
-int BuscarTodosVoos (FILE * arq, Data d , int pos);
+int BuscarTodosVoos (FILE * arq, int origem, int destino, Data d , int pos);
 void ProcurarVoo (FILE * arq, int origem, int destino, Data d);
 int RecebeCodVoo(char cod[]);
 void AlterarValorPassagem (FILE * arq, char cod[]);
