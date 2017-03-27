@@ -193,7 +193,6 @@ void venderPassagem(FILE *arqPass, FILE *arqCliente, FILE *arqVoo, int origem, i
 	char Locais[9][50] = {"RECIFE","SALVADOR","SAO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE"};
 	pos = BuscarTodosVoos (arqVoo,origem, destino, d,pos);
 	if ( pos == -1){
-		 printf("Lul \n");
 		printf("\nNenhum voo encontrado.\n");
 	}
 	else{

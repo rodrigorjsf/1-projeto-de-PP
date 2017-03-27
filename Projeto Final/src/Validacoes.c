@@ -207,7 +207,6 @@ int ValidaData(Data d) {
 
 	for (i = 0; i < 2; i++) {
 		if (isdigit(d.dia[i]) == 0 && cont == 0){
-			printf("\n1");
 			return 0;
 		}
 		cont++;
@@ -216,14 +215,12 @@ int ValidaData(Data d) {
         cont = 0;
 	for (i = 0; i < 2; i++) {
 		if (isdigit(d.mes[i]) == 0 && cont ==0){
-			printf("\n2");
 			return 0;
 		}
 		cont++;
 	}
 	aux = validaDataCorreta(d);
 	if (aux == 0){
-		printf("\n3\n");
 		return 0;
 	}
 	return 1;

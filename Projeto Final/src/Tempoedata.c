@@ -14,7 +14,8 @@ void CadastrarData (Data * d)
     {
         i = 0;
         system("cls");
-        printf("Digite o dia da partida: ");
+        printf("Digite a DATA partida: \n");
+        printf("DIA: ");
         while (i < 2)
         {
 
@@ -33,8 +34,8 @@ void CadastrarData (Data * d)
             i++;
         }
         i = 0;
-        system("cls");
-        printf("Digite o mes da partida: ");
+        printf("\n");
+        printf("MES: ");
         while (i < 2)
         {
         	if (i == 0)
@@ -51,6 +52,7 @@ void CadastrarData (Data * d)
         	}
         	i++;
         }
+        printf("\n");
         if (ValidaData(data) == 0 )
         {
             printf("Data invalida, digite novamente. \n");
@@ -80,8 +82,7 @@ void CadastrarHorarioNaEstrutura (TVoo * v)
     {
         i = 0;
         j = 0;
-        system("cls");
-        printf("Digite o horario de partida: \n");
+        printf("\nDigite o horario de partida(hh/mm): ");
         while(i < 4)
         {
             if (j < 2 && i < 2)
@@ -112,8 +113,7 @@ void CadastrarHorarioNaEstrutura (TVoo * v)
             i++;
         }
         if (ValidaHora(horario) == 0){
-            printf("Horario invalido, digite novamente. \n");
-            system("pause");
+            printf("\nHorario invalido, digite novamente. \n");
         }
         else if (comparaHoraLocal (horario) == 0 && comparaDataLocal (data) == 2)
         {
@@ -135,7 +135,7 @@ void CadastrarHorario (Horario * h)
     {
         i = 0;
         j = 0;
-        printf("Digite o horario de partida: \n");
+        printf("\nDigite o horario de partida(hh/mm): ");
         while(i < 4)
         {
             if (j < 2 && i < 2)
@@ -166,8 +166,7 @@ void CadastrarHorario (Horario * h)
             i++;
         }
         if (ValidaHora(horario) == 0){
-            printf("Horario invalido, digite novamente. \n");
-            system("pause");
+            printf("\nHorario invalido, digite novamente. \n");
         }
         else{
             strcpy(h->hora, horario.hora);

@@ -104,6 +104,7 @@ void CadastrarVoo(FILE * arq)
 	strcpy(v.dia, d.dia);
 	strcpy(v.mes, d.mes);
 	CadastrarHorarioNaEstrutura(&v);
+	printf ("\n");
 	printf ("\nVoo de codigo: %s \n", v.codVoo);
 	printf ("Voo de %s para %s.\n", v.origem, v.destino);
 	v.poltronas = 36;
@@ -113,7 +114,7 @@ void CadastrarVoo(FILE * arq)
 			v.mapaPoltronas[i][j] = 'o';
 		}
 	}
-	printf("\nDigite o valor da passagem: \n");
+	printf("\nDigite o valor da passagem: ");
 	scanf("%f", &v.valor);
 	v.status = 1;
 	status = fwrite(&v,sizeof(TVoo),1,arq);
@@ -150,7 +151,6 @@ void ProcurarVoo (FILE * arq, int origem, int destino, Data d)
     			printf("\nCodigo do voo: %s\n", voo.codVoo);
     			printf("Horario do voo: %s:%s\n", voo.hora, voo.min);
     			printf("Cadeiras disponiveis nesse voo: %d\n", voo.poltronas);
-    			printf("%d\n", voo.status);
 
     			cont++;
     		}
