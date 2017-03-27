@@ -19,7 +19,7 @@ FILE * criarArquivo (char nome[]) {
 void opcoesOrigem ()
 {
     int i;
-    char origens[9][100] = {"1- RECIFE","2 - SALVADOR","3 - SAO PAULO","4 - RIO DE JANEIRO","5 - CURITIBA","6 - PORTO ALEGRE","7 - NATAL","8 - MANAUS","9 - BELO HORIZONTE"};
+    char origens[9][50] = {"1- RECIFE","2 - SALVADOR","3 - SAO PAULO","4 - RIO DE JANEIRO","5 - CURITIBA","6 - PORTO ALEGRE","7 - NATAL","8 - MANAUS","9 - BELO HORIZONTE"};
     char origensEstado[9][10] = {"- PE","- BA","- SP","- RJ","- PR","- RS","- RN","- AM","- MG"};
     printf ("Opcoes de Origem: \n");
     for(i = 0; i < 9; i++)
@@ -30,7 +30,7 @@ void opcoesOrigem ()
 void opcoesDestinos ()
 {
     int i;
-    char destinos[9][100] = {"1- RECIFE","2 - SALVADOR","3 - SAO PAULO","4 - RIO DE JANEIRO","5 - CURITIBA","6 - PORTO ALEGRE","7 - NATAL","8 - MANAUS","9 - BELO HORIZONTE"};
+    char destinos[9][50] = {"1- RECIFE","2 - SALVADOR","3 - SAO PAULO","4 - RIO DE JANEIRO","5 - CURITIBA","6 - PORTO ALEGRE","7 - NATAL","8 - MANAUS","9 - BELO HORIZONTE"};
     char origensEstado[9][10] = {"- PE","- BA","- SP","- RJ","- PR","- RS","- RN","- AM","- MG"};
     printf ("Opcoes de Destino: \n");
     for(i = 0; i < 9; i++)
@@ -272,13 +272,10 @@ int validaCodReserva(char cod[]) {
 	}
 	return 1;
 }
-void atualizarVoos_e_Passagens ()
+void atualizarVoos_e_Passagens (FILE *arqVoo, FILE *arqPassagem)
 {
-	FILE *passagemTemp, *vooTemp,*arqPassagem,*arqVoo;
-	int fim = 1, pos, posAux = -1, aux, status;
-	char nomeArqdois [] = "Passagem.dat", nomeArqtres [] = "Voo.dat";
-	arqPassagem = criarArquivo (nomeArqdois);
-	arqVoo = criarArquivo (nomeArqtres);
+	FILE *passagemTemp, *vooTemp;
+	int fim = 1, pos, aux, status;
 	TVoo v;
 	TPass p;
 	Data d;
@@ -302,7 +299,7 @@ void atualizarVoos_e_Passagens ()
 		{
 			if (!feof(arqVoo))
 			{
-				printf ("\nErro de leitura \n");
+				printf ("\nErro de leitura1 \n");
 				fim = 0;
 				break;
 			}
@@ -325,21 +322,23 @@ void atualizarVoos_e_Passagens ()
 				fseek(arqPassagem, 0, 0);
 				do
 				{
-					pos = BuscarPassagemCodVoo (arqPassagem,v.codVoo, posAux);
-					posAux = pos;
-
-					if (pos == -1)
+					status = fread(&p, sizeof(TPass), 1, arqPassagem);
+					if (status != 1)
 					{
-						break;
-					}
-					else if (pos == -2)
-					{
-						printf ("\nErro de leitura \n");
-						break;
+						if (!feof(arqPassagem))
+						{
+							printf ("\nErro de leitura2 \n");
+							pos = 0;
+							break;
+						}
+						else
+						{
+							pos = 0;
+							break;
+						}
 					}
 					else
 					{
-						fread(&p, pos * sizeof(TPass), 1, arqPassagem);
 						if (strcmp (p.codVoo,v.codVoo) == 0)
 						{
 							p.status = 0;
@@ -353,7 +352,12 @@ void atualizarVoos_e_Passagens ()
 								printf ("\nErro de gravacao \n");
 						}
 					}
-				}while (pos > -1);
+				}while (pos != 0);
+				status = fwrite (&v,sizeof (TVoo), 1, vooTemp);
+				if (status != 1)
+					printf ("\nErro de gravacao \n");
+			}
+			else{
 				status = fwrite (&v,sizeof (TVoo), 1, vooTemp);
 				if (status != 1)
 					printf ("\nErro de gravacao \n");

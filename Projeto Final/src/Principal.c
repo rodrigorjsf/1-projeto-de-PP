@@ -17,7 +17,9 @@ int main () {
 	char op, nomeArqum [] = "Cliente.dat", nomeArqdois [] = "Passagem.dat", nomeArqtres [] = "Voo.dat";
 	FILE * arqCliente,*arqPassagem,*arqVoo;
 	arqCliente = criarArquivo (nomeArqum);
-	atualizarVoos_e_Passagens ();
+	arqPassagem = criarArquivo (nomeArqdois);
+	arqVoo = criarArquivo (nomeArqtres);
+	atualizarVoos_e_Passagens (arqVoo,arqPassagem);
 	arqPassagem = criarArquivo (nomeArqdois);
 	arqVoo = criarArquivo (nomeArqtres);
 	if (arqCliente == NULL || arqPassagem == NULL || arqVoo == NULL )

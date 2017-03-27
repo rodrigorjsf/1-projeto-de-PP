@@ -21,7 +21,7 @@ int ValidaData(Data d);
 int ValidaHora(Horario horario);
 int ValidaCodVoo(char cod[]);
 int validaCodReserva(char cod[]);
-void atualizarVoos_e_Passagens ();
+void atualizarVoos_e_Passagens (FILE *arqVoo, FILE *arqPassagem);
 
 
 #endif /* VALIDACOES_H_ */

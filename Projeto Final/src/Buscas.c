@@ -94,7 +94,7 @@ int BuscarPassagemCodVoo (FILE * arq, char cod [], int pos)
 int procurarVooPassagem(FILE *arqVoo, int origem, int destino, Data d, char cod[]) {
 	TVoo v;
 	int cont = -1;
-	char Locais[9][100] = {"RECIFE","SALVADOR","SAO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE"};
+	char Locais[9][50] = {"RECIFE","SALVADOR","SAO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE"};
 	int diaAux1, mesAux1, diaAux2, mesAux2;
 	fseek(arqVoo, 0, 0);
 	while (1) {

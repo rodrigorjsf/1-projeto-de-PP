@@ -11,8 +11,8 @@ typedef struct cliente {
 
 typedef struct voo {
 	char codVoo [8];
-	char origem [100];
-	char destino [100];
+	char origem [50];
+	char destino [50];
 	char dia [3];
 	char mes [3];
 	char hora [3];

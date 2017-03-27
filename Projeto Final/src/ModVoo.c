@@ -19,7 +19,6 @@ void gerarCodigo (TVoo * v)
 		aux = (rand() % 9) + 48;
 		cod[i] = aux;
 	}
-	i++;
 	cod[i] = '\0';
 	strcpy (v->codVoo,cod);
 }
@@ -54,7 +53,7 @@ void CadastrarVoo(FILE * arq)
 	Data d;
 	int status, aux, i, j, num1, num2, t = 0;
 	char origemAux[2], destinoAux[2];
-	char Locais[9][100] = {"RECIFE","SALVADOR","SAO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE"};
+	char Locais[9][50] = {"RECIFE","SALVADOR","SAO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE"};
 	gerarCodigo(&v);
 	aux = BuscarVoo(arq, v.codVoo);
 	if (aux > -1){
@@ -131,7 +130,7 @@ void ProcurarVoo (FILE * arq, int origem, int destino, Data d)
 {
     TVoo voo;
     int pos, posAux = -1, cont = 0;
-    char Locais[9][100] = {"RECIFE","SALVADOR","SAO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE"};
+    char Locais[9][50] = {"RECIFE","SALVADOR","SAO PAULO","RIO DE JANEIRO","CURITIBA","PORTO ALEGRE","NATAL","MANAUS","BELO HORIZONTE"};
     fseek (arq, 0, 0);
     printf("\n%s para %s\n", Locais[origem-1], Locais[destino-1]);
     do

@@ -73,6 +73,7 @@ void ConsultarPassagem (FILE * arqCliente, FILE * arqPass, FILE * arqVoo,char cp
                     printf ("Origem: %s \n", v.origem);
                     printf ("Destino: %s \n", v.destino);
                     printf ("Valor: %.2f \n\n", v.valor);
+                    printf ("Valor: %d \n\n", v.status);
 
                 }
                 else
@@ -85,6 +86,7 @@ void ConsultarPassagem (FILE * arqCliente, FILE * arqPass, FILE * arqVoo,char cp
                 	printf ("Origem: %s \n", v.origem);
                 	printf ("Destino: %s \n", v.destino);
                 	printf ("Valor: %.2f \n\n", v.valor);
+                	printf ("Valor: %d \n\n", v.status);
                 }
 
             }
