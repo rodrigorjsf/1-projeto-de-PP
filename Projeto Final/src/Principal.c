@@ -244,7 +244,7 @@ void manutencao(FILE *arqCliente, FILE *arqVoo, FILE *arqPassagem)
     	}
     	fclose (arqCliente);
     	fclose (arqVoo);
-	fclose (arqPass);
+	fclose (arqPassagem);
     	fclose (clienteTemp);
     	fclose (vooTemp);
     	remove ("Cliente.dat");
