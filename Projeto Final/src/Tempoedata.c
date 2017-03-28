@@ -180,10 +180,10 @@ int comparaHora_e_Data (char dia[], char mes[], char hora[], char min[])
     Data d;
     time_t tp;
     struct tm *local;
-    Horario h;
-    tp = time (NULL);
+    Horario h;    
     int diaLocal, diaRecebido, mesLocal, mesRecebido;
     int horaLocal, horaRecebido, minLocal, minRecebido;
+    tp = time (NULL);
     local = localtime (&tp);
     strftime(d.dia, sizeof(d.dia), "%d", local);
     strftime(d.mes, sizeof(d.mes), "%m", local);
@@ -229,8 +229,8 @@ int comparaHoraLocal (Horario horario)
     time_t tp;
     struct tm *local;
     Horario h;
-    tp = time (NULL);
     int horaLocal, horaRecebido, minLocal, minRecebido;
+    tp = time (NULL);
     local = localtime (&tp);
     strftime(h.hora, sizeof(h.hora), "%H", local);
     strftime(h.min, sizeof(h.min), "%M", local);
@@ -256,8 +256,8 @@ int comparaDataLocal (Data data)
     Data d;
     time_t tp;
     struct tm *local;
-    tp = time (NULL);
     int diaLocal, diaRecebido, mesLocal, mesRecebido;
+    tp = time (NULL);
     local = localtime (&tp);
     strftime(d.dia, sizeof(d.dia), "%d", local);
     strftime(d.mes, sizeof(d.mes), "%m", local);
