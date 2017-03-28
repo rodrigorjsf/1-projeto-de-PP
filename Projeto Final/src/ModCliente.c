@@ -254,12 +254,6 @@ void AlterarCliente(FILE * arq, char cpf []){
     else {
         fseek(arq, pos * sizeof (TCliente), 0);
         status = fread (&cliente,sizeof (TCliente), 1, arq);
-    }
-    if (cliente.status == 0){
-    	printf ("\nCliente nao cadastrado. \n");
-    	system ("pause");
-    }
-    else{
     	do{
     		printf("\nEscolha o que deseja altrar: \n");
     		printf ("1 - Alterar nome \n");
